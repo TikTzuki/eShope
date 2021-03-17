@@ -1151,11 +1151,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\repositories\\eShop\\eeShop.csproj",
+      "projectUniqueName": "D:\\repositories\\eShop\\eeShop.csproj",
       "projectName": "eeShop",
-      "projectPath": "d:\\repositories\\eShop\\eeShop.csproj",
+      "projectPath": "D:\\repositories\\eShop\\eeShop.csproj",
       "packagesPath": "C:\\Users\\VIVOBOOK\\.nuget\\packages\\",
-      "outputPath": "d:\\repositories\\eShop\\obj\\",
+      "outputPath": "D:\\repositories\\eShop\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\VIVOBOOK\\AppData\\Roaming\\NuGet\\NuGet.Config"

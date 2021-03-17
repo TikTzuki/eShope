@@ -16,15 +16,16 @@ namespace eeShop
     {
         public static void Main(string[] args)
         {
-            // CreateHostBuilder(args).Build().SeedDatabase().Run();
-            //Create Conmection
-            var connectionStringBuilder = new SqliteConnectionStringBuilder();
-            connectionStringBuilder.DataSource = "./myDb.db";
+            // // CreateHostBuilder(args).Build().SeedDatabase().Run();
+            // //Create Conmection
+            // var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            // connectionStringBuilder.DataSource = "./sqlite/eshop.db";
 
-            using(var connection = new SqliteConnection(connectionStringBuilder.ConnectionString)){
-                connection.Open();
+            // using(var connection = new SqliteConnection(connectionStringBuilder.ConnectionString)){
+            //     connection.Open();
 
-            }
+            // }
+            CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

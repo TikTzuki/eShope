@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "start npm run fake-server && start ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "fake-server": "json-server fake-server.json --routes fake-server-routes.json"
   },
   "private": true,
   "dependencies": {
@@ -16,11 +17,21 @@
     "@angular/compiler": "~11.2.3",
     "@angular/core": "~11.2.3",
     "@angular/forms": "~11.2.3",
+    "@angular/localize": "~11.2.3",
     "@angular/platform-browser": "~11.2.3",
     "@angular/platform-browser-dynamic": "~11.2.3",
     "@angular/router": "~11.2.3",
+    "@fortawesome/angular-fontawesome": "^0.8.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/free-solid-svg-icons": "^5.15.2",
+    "@microsoft/signalr": "^5.0.3",
+    "@ng-bootstrap/ng-bootstrap": "^9.0.2",
     "@types/crypto-js": "^4.0.1",
+    "bootstrap": "^4.6.0",
     "crypto-js": "^4.0.0",
+    "jquery": "^3.6.0",
+    "json-server": "^0.16.3",
+    "ngx-toastr": "^13.2.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

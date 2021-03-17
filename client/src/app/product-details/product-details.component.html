@@ -1,8 +1,83 @@
-<h2>Product Details</h2>
-<!-- <div *ngIf="product">
-  <h3>{{product.name}}</h3>
-  <h4>{{product.price}}</h4>
-  <p>{{product.description}}</p>
+<div class="container" *ngIf="product != null">
+  <div class="esh-product-detail row">
+    <div class="gallery">
+      <div class="gallery-preview-panel">
+        <img [src]="selectedSku.images[0].url">
+      </div>
+    <div class="next-slick -net-slick-outer- next-slick-horizontal item-gallery-slider">
+      <div class="next-slick-inner">
+        <div class="next-slick-list">
+          <img *ngFor="let image of selectedSku.images" [src]="image.url">
+        </div>
+        <div class="next-slick-arrow next-slick-prev" style="display: block;">
+          <fa-icon icon="chevron-right"></fa-icon>
+        </div>
+        <div class="next-slick-arrow next-slick-next" style="display: block;">
+          <fa-icon icon="chevron-left"></fa-icon>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="main-infomation-detail">
+      <h1>{{product.productName}}</h1>
+      <p> Thuong hieu: {{product.brand}}</p>
+      <div class="module-sku-select">
+        <h6 class="section-content">
+          Nhom mau
+        </h6>
+        <div class="section-content">
+          <div class="sku-content-header">
+            <span class="sku-name">
+              {{selectedSku?.color}}-{{selectedSku?.size}}
+            </span>
+          </div>
+          <div class="sku-content">
+            <span *ngFor="let sku of product.skus" (click)="onSkuChanged($event, sku)" [ngClass]="(sku==selectedSku)?'checked':''" class="sku-img-icon">
+              <img  src="{{sku.images[0].url}}">
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="module-quantity-input">
+        <h6 class="section-title">So luong</h6>
+        <div class="section-content">
+          <div class="quantity-picker">
+            <a class="next-number-picker-handler next-number-picker-handler-up">
+              <span class="next-number-pick-handler-up-inner">
+                <fa-icon icon="plus"></fa-icon>
+              </span>
+            </a>
+            <input type="number" (keyup)="onQuantityChanged($event)" value="0" max="{{selectedSku.available}}" name="sku-quantity">
+            <a class="next-number-picker-handler next-number-picker-handler-down">
+              <span class="next-number-pick-handler-down-inner">
+                <fa-icon icon="minus"></fa-icon>
+              </span>
+            </a>
+          </div>
 
-  <button (click)="addToCart(product)">Buy</button>
-</div> -->
+          <span class="quantity-cotent-warning">Het hang</span>
+        </div>
+      </div>
+      <div class="module-add-to-cart">
+        <button class="add-to-cart" (click)="addToCart($event)">
+          <span>
+            Them vao gio hang
+          </span>
+        </button>
+        <form [formGroup]="skuForm" action method="post">
+          <input type="hidden" formControlName="byParams">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+          <!-- value="'{&quot;items&quot;: [ {&quot;skuId&quot;:&quot;'
+          +selectedSku.id
+          +'&quot;, &quot;name&quot;:&quot;'
+          +product.productName
+          +'&quot;, &quot;variation&quot:&quot;'
+          +selectedSku.color+selectedSku.size
+          +'&quot;, &quot;itemPrice&quot;:&quot;'+
+          selectedSku.price
+          +'&quot;, &quot;quantity&quot;:&quot;'
+          +quantity+'&quot; ]}'" -->
