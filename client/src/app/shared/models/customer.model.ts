@@ -9,4 +9,12 @@ export interface ICustomer{
   accessExpries: string;
   refreshToken: string;
   refreshExpries: string;
+  address: IAddress[]
+}
+
+export interface IAddress{
+  street: string;
+  address1: string;
+  address2: string;
+  address3: string;
 }

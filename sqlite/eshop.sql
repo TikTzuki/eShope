@@ -101,4 +101,13 @@ CREATE TABLE address (
   address3 TEXT,
   FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
+CREATE TABLE seller_address(
+  id INT PRIMARY KEY,
+  seller_id INT,
+  street TEXT,
+  address1 TEXT,
+  address2 TEXT,
+  address3 TEXT,
+  FOREIGN KEY (seller_id) REFERENCES seller_account(id)
+);
 COMMIT;
