@@ -56,7 +56,7 @@ export class CatalogComponent implements OnInit {
   loadData(){
     this.getCategories();
     this.getBrands();
-    this.getCatalog(0, 10);
+    this.getCatalog(0, 2);
   }
 
   getCategories(){
@@ -80,7 +80,6 @@ export class CatalogComponent implements OnInit {
     // this.brandSelected = this.brandSelected && this.brandSelected.toString() != null ? this.brandSelected : null;
     console.log(this.categorySelected);
     console.log(this.brandSelected);
-    
     this.getCatalog(this.paginationInfo.itemsPage, this.paginationInfo.actualPage, this.categorySelected, this.brandSelected);
   }
 
@@ -107,11 +106,12 @@ export class CatalogComponent implements OnInit {
 
   getCatalog(pageIndex: number, pageLimit: number, category?: number, brand?:string){
     this.errorRecieved = false;
-  
+    
     this.service.getCatalog(pageIndex, pageLimit, category, brand)
       .pipe(catchError( err => this.handleError(err) ))
       .subscribe(catalog => {
         this.catalog = catalog;
+        console.log(catalog);
         this.paginationInfo = {
           actualPage : catalog.pageIndex,
           itemsPage : catalog.pageSize,
@@ -119,6 +119,8 @@ export class CatalogComponent implements OnInit {
           items: catalog.pageSize,
           totalPages: Math.ceil(catalog.count / catalog.pageSize)
         }
+        console.log(this.paginationInfo);
+        
       })
   }
 

@@ -1,31 +1,27 @@
 import { Injectable } from "@angular/core";
 import { Subject, Observable, observable } from 'rxjs';
-import { IOrder } from "../shared/models/order.model";
 import { DataService } from '../shared/services/data.service';
 import { SecurityService } from '../shared/services/security.service';
 import { CartWrapperService } from '../shared/services/cart.wrapper.service';
 import { ConfigurationService } from "../shared/services/configuration.service";
 import { StorageService } from '../shared/services/storage.service';
 import { tap } from "rxjs/operators";
-import { create } from 'json-server';
 import { ICart } from '../shared/models/cart.model';
-import { ICartItem } from '../shared/models/cartItem.model';
 import { Router } from '@angular/router';
-import { totalmem } from "node:os";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CartService{
+export class CartService {
   private cartUrl: string = '';
   private purchaseUrl: string = '';
   cart: ICart = {
-      id: null,
-      customerId: 1,
-      shippingFee: null,
-      totalPrice: null,
-      items: []
-    };
+    id: null,
+    customerId: 1,
+    shippingFee: null,
+    totalPrice: null,
+    items: []
+  };
 
   private cartDropedSource = new Subject();
   cartDroped$ = this.cartDropedSource.asObservable();
@@ -37,16 +33,7 @@ export class CartService{
     private router: Router,
     private configurationService: ConfigurationService,
     private storageService: StorageService
-  ) {  
-    this.cart = {
-      id: null,
-      customerId: 1,
-      shippingFee: null,
-      totalPrice: null,
-      items: []
-    };
-    this.cart.items = [];
-
+  ) {
     // if(this.authService.IsAuthorized){
     //   if(this.authService.UserData){
     //     // TODO:  --------------------------------------
@@ -69,32 +56,34 @@ export class CartService{
     });
   }
 
-    addItemToCart(item): Observable<boolean>{
-      this.cart.items.push(item);
-      return this.setCart(this.cart);
-    }
+  addItemToCart(item): Observable<boolean> {
+    console.log('add Item to cart');
+    this.cart.items.push(item);
+    return this.setCart(this.cart);
+  }
 
-    setCart(cart): Observable<boolean>{
-      let url = this.purchaseUrl + '/api/carts/';
-      this.cart = cart;
-      return this.service.post(url, cart).pipe<boolean>(tap((response: any) => true));
-    }
+  setCart(cart: ICart): Observable<boolean> {
+    console.log('set cart');
+    let url = this.purchaseUrl + '/api/carts/'+ cart.id;
+    this.cart = cart;
+    return this.service.put(url, cart).pipe<boolean>(tap((response: any) => true));
+  }
 
-    setCartCheckout(cartCheckout): Observable<boolean>{
-      const url = this.cartUrl + '/api/orders/checkout';
+  setCartCheckout(cartCheckout): Observable<boolean> {
+    const url = this.cartUrl + '/api/orders/checkout';
 
-      return this.service.postWithId(url, cartCheckout).pipe<boolean>(tap((response: any) => {
-        this.cartEvents.orderCreate();
-        return true;
-      }));
-    }
+    return this.service.post(url, cartCheckout).pipe<boolean>(tap((response: any) => {
+      this.cartEvents.orderCreate();
+      return true;
+    }));
+  }
 
   getCart(): Observable<ICart> {
     // TODO: Change orders to cart
     const url = this.cartUrl + '/api/cart/' + this.cart.customerId;
     return this.service.get(url).pipe<ICart>(tap(
       {
-        next : (response: any) => {
+        next: (response: any) => {
           if (response.status === 204) {
             return null;
           }
@@ -104,18 +93,18 @@ export class CartService{
     ));
   }
 
-    //mapCartInfoCheckout(order: IOrder): ICartCheckout
+  //mapCartInfoCheckout(order: IOrder): ICartCheckout
 
-    dropCart(){
-      this.cart.items = [];
-      this.cartDropedSource.next();
-    }
+  dropCart() {
+    this.cart.items = [];
+    this.cartDropedSource.next();
+  }
 
   private loadData() {
     this.getCart().subscribe(cart => {
-      if (cart != null){
+      if (cart != null) {
         this.cart = cart;
       }
     })
   }
- }
+}

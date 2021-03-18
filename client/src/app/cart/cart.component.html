@@ -1,63 +1,58 @@
 <div class="cart">
-  <app-header url="/catlog">Back to catalog</app-header>
-  <div class="container">
-    <div *ngFor="let errorMessage of errorMessages">
-      <div class="cart-items-margin-left1 row">
-        <div class="alert alert-warning" role="alert">&nbsp;{{errorMessage}}</div>
-      </div>
+    <app-header routerLink="/catalog">Back to catalog</app-header>
+    <div class="container">
+        <div *ngFor="let errorMessage of errorMessages">
+            <div class="cart-items-margin-left1 row">
+                <div class="alert alert-warning" role="alert">&nbsp;{{errorMessage}}</div>
+            </div>
+        </div>
+
+        <article class="cart-titles row">
+            <section class="cart-title col-3">Product</section>
+            <section class="cart-title col-3 hidden-lg-down"></section>
+            <section class="cart-title col-2">Price</section>
+            <section class="cart-title col-2">Quantity</section>
+            <section class="cart-title col-2">Cost</section>
+        </article>
+
+        <div class="cart-items--border" *ngFor="let item of cart?.items">
+            <article class="cart-item row">
+                <section class="cart-item cart-item--middle col-log-3 hidden-lg-down">
+                    <img src="{{item.image}}" class="cart-img">
+                </section>
+                <section class="cart-item cart-item--middle col-3">{{item.name}}</section>
+                <section class="cart-item cart-item--middle col-2">{{item.itemPrice}}</section>
+                <section class="cart-item cart-item--middle col-2">
+                    <input id="quantity" type="number" class="cart-input" min="1" [(ngModel)]="item.quantity" (change)="itemQuantityChanged(item)" />
+                </section>
+                <section class="cart--item cart-item--middle cart-item--mark col-2">
+                    {{(item.itemPrice * item.quantity) | number:'.2-2'}}
+                </section>
+            </article>
+        </div>
     </div>
 
-    <article class="cart-titles row">
-      <section class="cart-title col-3">Product</section>
-      <section class="cart-title col-3 hidden-lg-down"></section>
-      <section class="cart-title col-2">Price</section>
-      <section class="cart-title col-2">Quantity</section>
-      <section class="cart-title col-2">Cost</section>
-    </article>
+    <div class="container">
+        <article class="cart-titles cart-titles--clean row">
+            <section class="cart-title col-9"></section>
+            <section class="cart-title col-2">Total</section>
+        </article>
 
-    <div class="cart-items--border" *ngFor="let item of cart?.orderItems" >
-      <article class="cart-item row">
-        <section class="cart-item cart-item--middle col-log-3 hidden-lg-down">
-          <img src="{{item.image}}" class="cart-img">
-        </section>
-        <section class="cart-item cart-item--middle col-3">{{item.name}}</section>
-        <section class="cart-item cart-item--middle col-2">{{item.itemPrice}}</section>
-        <section class="cart-item cart-item--middle col-2">
-          <input id="quantity" 
-          type="number" 
-          class="cart-input"
-          min="1"
-          [(ngModel)]="item.quantity"
-          (change)="itemQuantityChanged(item)" />
-        </section>
-        <section class="cart--item cart-item--middle cart-item--mark col-2">
-          {{(item.itemPrice * item.quantity) | number:'.2-2'}}
-        </section>
-      </article>
+        <article class="cart-items row">
+            <section class="cart-item col-9"></section>
+            <section class="cart-item cart-item--mark col-2">
+                {{totalPrice | number:'.2-2'}}
+            </section>
+        </article>
+
+        <article class="cart-items row">
+            <section class="cart-item col-7"></section>
+            <section class="cart-item col-2">
+                <button class="cart-checkout" (click)="update($event)">[Update]</button>
+            </section>
+            <section class="cart-item col-3">
+                <div (click)="checkOut($event)" class="cart-checkout">[Checkout]</div>
+            </section>
+        </article>
     </div>
-  </div>
-
-  <div class="container">
-    <article class="cart-titles cart-titles--clean row">
-      <section class="cart-title col-9"></section>
-      <section class="cart-title col-2">Total</section>
-    </article>
-
-    <article class="cart-items row">
-      <section class="cart-item col-9"></section>
-      <section class="cart-item cart-item--mark col-2">
-        {{totalPrice | number:'.2-2'}}
-      </section>
-    </article>
-
-    <article class="cart-items row">
-      <section class="cart-item col-7"></section>
-      <section class="cart-item col-2">
-        <button class="cart-checkout" (click)="update($event)">[Update]</button>
-      </section>
-      <section class="cart-item col-3">
-        <div (click)="checkOut($event)" class="cart-checkout">[Checkout]</div>
-      </section>
-    </article>
-  </div>
 </div>

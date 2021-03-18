@@ -27,8 +27,10 @@ export class CartStatusComponent implements OnInit {
 
   ngOnInit() {
     // Subcibe to Add Basket Observable:
-    this.cartItemAddedSubscription = this.cartEvents.addItemToBasket$.subscribe(
+    console.log('init cart status');
+    this.cartItemAddedSubscription = this.cartEvents.addItemToCart$.subscribe(
       item => {
+        console.log('cart status add item');
         this.service.addItemToCart(item).subscribe(res => {
           this.service.getCart().subscribe(cart => {
             if (cart) {

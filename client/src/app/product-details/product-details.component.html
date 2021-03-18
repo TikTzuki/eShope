@@ -2,39 +2,68 @@
   <div class="esh-product-detail row">
     <div class="gallery">
       <div class="gallery-preview-panel">
-        <img [src]="selectedSku.images[0].url">
+        <div class="gallery-preview-panel-content">
+        <img [src]="selectedImageUrl" class="gallery-preview-panel-image">
+        </div>
       </div>
     <div class="next-slick -net-slick-outer- next-slick-horizontal item-gallery-slider">
-      <div class="next-slick-inner">
+  <fa-icon icon="chevron-left" (click)="slickModal.slickGoTo(1)"></fa-icon>
+        <ngx-slick-carousel class="carousel next-slick-list" #slickModal="slick-carousel" [config]="slideConfig" (init)="slickInit($event)"
+          (breakpoint)="breakpoint($event)" (afterChange)="afterChange($event)" (beforeChange)="beforeChange($event)">
+          <div ngxSlickItem
+          *ngFor="let image of selectedSku.images" 
+          [ngClass]="{'next-slick-state-active': image.url == selectedImageUrl}"
+          (click)="onImageSelected($event,selectedImageUrl)"
+          class="slide next-slick-slide">
+            <img src="{{image.url}}" class="item-galley-thumbnail-image" alt="{{image.url}}">
+          </div>
+        </ngx-slick-carousel>
+  <fa-icon icon="chevron-right" (click)="slickModal.slickGoTo(3)"></fa-icon>
+
+      <!-- <div class="next-slick-inner">
         <div class="next-slick-list">
-          <img *ngFor="let image of selectedSku.images" [src]="image.url">
+          <div class="next-slick-track">
+            <div class="next-slick-slide" *ngFor="let image of selectedSku.images"
+              [ngClass]="{'next-slick-state-active': image.url == selectedImageUrl}" (click)="onImageSelected($event, image.url)">
+              <img [src]="image.url" class="item-galley-thumbnail-image">
+            </div>
+          </div>
         </div>
-        <div class="next-slick-arrow next-slick-prev" style="display: block;">
+        <div 
+        class="next-slick-arrow next-slick-prev"
+        style="display: block;">
           <fa-icon icon="chevron-right"></fa-icon>
         </div>
         <div class="next-slick-arrow next-slick-next" style="display: block;">
           <fa-icon icon="chevron-left"></fa-icon>
         </div>
-      </div>
+      </div> -->
     </div>
     </div>
+    <!-- Product detail -->
     <div class="main-infomation-detail">
+      <div class="product-detail">
       <h1>{{product.productName}}</h1>
-      <p> Thuong hieu: {{product.brand}}</p>
+      <p> Thuong hieu: {{product.brandId}}</p>
       <div class="module-sku-select">
-        <h6 class="section-content">
+        <div id="module_sku_select" class="pdp-block module">
+          <div class="sku-selector">
+        <h6 class="section-title">
           Nhom mau
         </h6>
-        <div class="section-content">
-          <div class="sku-content-header">
-            <span class="sku-name">
-              {{selectedSku?.color}}-{{selectedSku?.size}}
-            </span>
-          </div>
-          <div class="sku-content">
-            <span *ngFor="let sku of product.skus" (click)="onSkuChanged($event, sku)" [ngClass]="(sku==selectedSku)?'checked':''" class="sku-img-icon">
-              <img  src="{{sku.images[0].url}}">
-            </span>
+            <div class="sku-content-header">
+              <span class="sku-name">
+                {{selectedSku?.color}}-{{selectedSku?.size}}
+              </span>
+            </div>
+            <div class="sku-content">
+              <span *ngFor="let sku of product.skus"
+              (click)="onSkuChanged($event, sku)"
+                [ngClass]="(sku==selectedSku)?'sku-variable-img-wrap-selected':''"
+                class="sku-variable-img-wrap">
+                <img src="{{sku.images[0].url}}" class="sku-image-wrap">
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -47,26 +76,31 @@
                 <fa-icon icon="plus"></fa-icon>
               </span>
             </a>
-            <input type="number" (keyup)="onQuantityChanged($event)" value="0" max="{{selectedSku.available}}" name="sku-quantity">
+            <input type="text"
+             [disabled]="selectedSku.available > 0 ? null : true" 
+             (keypress)="numberOnly($event)"
+              (keyup)="onQuantityChanged($event)"
+               [(ngModel)]="quantity"
+                name="sku-quantity">
             <a class="next-number-picker-handler next-number-picker-handler-down">
               <span class="next-number-pick-handler-down-inner">
                 <fa-icon icon="minus"></fa-icon>
               </span>
             </a>
           </div>
-
-          <span class="quantity-cotent-warning">Het hang</span>
+          <span *ngIf="!(selectedSku.available > 0)" class="quantity-cotent-warning">Het hang</span>
         </div>
       </div>
       <div class="module-add-to-cart">
-        <button class="add-to-cart" (click)="addToCart($event)">
+        <button [disabled]="!(quantity > 0)" class="btn btn-success add-to-cart" (click)="addToCart($event)">
           <span>
             Them vao gio hang
           </span>
         </button>
-        <form [formGroup]="skuForm" action method="post">
-          <input type="hidden" formControlName="byParams">
+        <form [formGroup]="skuForm" name="skuForm" action method="post">
+          <input name="byParams" type="hidden" formControlName="byParams">
         </form>
+      </div>
       </div>
     </div>
   </div>

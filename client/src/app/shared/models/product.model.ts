@@ -3,7 +3,7 @@ import { ISku } from "./sku.model";
 export interface IProduct{
   id: number;
   categoryId: number;
-  brand: string;
+  brandId: number;
   sellerId: number;
   productName: string;
   description: string;

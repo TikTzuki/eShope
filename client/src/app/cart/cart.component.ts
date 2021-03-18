@@ -6,6 +6,7 @@ import { IOrder } from '../shared/models/order.model';
 import { CartService } from './cart.service';
 import { IOrderItem } from '../shared/models/orderItem.model';
 import { error } from 'protractor';
+import { ICart } from '../shared/models/cart.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -15,7 +16,7 @@ import { Router } from '@angular/router';
 })
 export class CartComponent implements OnInit {
   errorMessages: any;
-  cart: IOrder;
+  cart: ICart;
   totalPrice: number = 0;
 
   constructor(
@@ -64,7 +65,7 @@ export class CartComponent implements OnInit {
 
   private calculateTotalPrice(){
     this.totalPrice = 0;
-    this.cart.orderItems.forEach(item => {
+    this.cart.items.forEach(item => {
       this.totalPrice += (item.itemPrice * item.quantity);
     })
   }

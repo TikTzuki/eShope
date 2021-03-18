@@ -1,10 +1,10 @@
 :root{
   /* Color */
---color-brand: #00A69C;
---color-brand-dark: darken(--color-brand, 10%);
---color-brand-darker: darken(--color-brand, 20%);
---color-brand-bright: lighten(--color-brand, 10%);
---color-brand-brighter: lighten(--color-brand, 20%);
+--color-primary: #00A69C;
+--color-primary-dark: darken(--color-primary, 10%);
+--color-primary-darker: darken(--color-primary, 20%);
+--color-primary-bright: lighten(--color-primary, 10%);
+--color-primary-brighter: lighten(--color-primary, 20%);
 
 --color-secondary: #83D01B;
 --color-secondary-dark: darken(--color-secondary, 5%);

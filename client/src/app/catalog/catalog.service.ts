@@ -28,14 +28,16 @@ export class CatalogService{
     let url = this.catalogUrl; 
 
     url = url
-      + '?_page=' + pageIndex
-      + '&_limit=' + pageLimit;
+      + '?page=' + pageIndex
+      + '&limit=' + pageLimit;
 
-    if (category)
+    if (category){
       url = url + '&categoryId=' + category;
+    }
 
-    if (brand)
+    if (brand){
       url = url + '&brand=' + brand;
+    }
     console.log(url);
     return this.service.get(url).pipe<ICatalog>(tap((response: any) => {
       return response;

@@ -13,9 +13,19 @@ export class ProductDetailService {
     private service: DataService,
     private configurationService: ConfigurationService
   ) {
-    this.configurationService.settingLoaded$.subscribe(x => {
+    if (this.configurationService.isReady) {
       this.productUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products';
-    });
+      
+    } else {
+      console.log("false product detail")
+      this.configurationService.settingLoaded$.subscribe(
+        {
+          next: (res) => {
+            console.log(
+              this.productUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products');
+          }
+        });
+    }
   }
 
   getProduct(id: number): Observable<IProduct> {

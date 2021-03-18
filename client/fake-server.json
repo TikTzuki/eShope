@@ -2,7 +2,7 @@
   "catalog": {
     "pageIndex": 0,
     "pageSize": 10,
-    "count": 1,
+    "count": 4,
     "data": [
       {
         "id": 1,
@@ -27,18 +27,129 @@
             "price": 34,
             "images": [
               {
-                "id": 1,
-                "image": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
                 "skuId": 1
               },
               {
-                "id": 1,
-                "image": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
                 "skuId": 1
               },
               {
-                "id": 1,
-                "image": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+                "skuId": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "categoryId": 1,
+        "brandId": 1,
+        "sellerId": 1,
+        "productName": "product nameeee",
+        "description": "this is description",
+        "status": "active",
+        "skus": [
+          {
+            "id": 2,
+            "productId": 2,
+            "sellerSku": "skuby",
+            "available": 2,
+            "color": "red",
+            "size": 45,
+            "height": 40,
+            "width": 43,
+            "length": 43,
+            "weight": 32,
+            "price": 34,
+            "images": [
+              {
+                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+                "skuId": 3
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+                "skuId": 1
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+                "skuId": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "categoryId": 3,
+        "brandId": 1,
+        "sellerId": 1,
+        "productName": "product nameeee",
+        "description": "this is description",
+        "status": "active",
+        "skus": [
+          {
+            "id": 3,
+            "productId": 3,
+            "sellerSku": "skuby",
+            "available": 2,
+            "color": "red",
+            "size": 45,
+            "height": 40,
+            "width": 43,
+            "length": 43,
+            "weight": 32,
+            "price": 34,
+            "images": [
+              {
+                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+                "skuId": 3
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+                "skuId": 3
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+                "skuId": 3
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "categoryId": 1,
+        "brandId": 1,
+        "sellerId": 1,
+        "productName": "product nameeee",
+        "description": "this is description",
+        "status": "active",
+        "skus": [
+          {
+            "id": 4,
+            "productId": 4,
+            "sellerSku": "skuby",
+            "available": 2,
+            "color": "red",
+            "size": 45,
+            "height": 40,
+            "width": 43,
+            "length": 43,
+            "weight": 32,
+            "price": 34,
+            "images": [
+              {
+                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+                "skuId": 1
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+                "skuId": 1
+              },
+              {
+                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
                 "skuId": 1
               }
             ]
@@ -63,7 +174,25 @@
     {
       "id": 1,
       "categoryId": 1,
-      "brand": "product brand",
+      "brandId": "product brand",
+      "sellerId": 1,
+      "productName": "product nameeee",
+      "description": "this is description",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "categoryId": 1,
+      "brandId": 1,
+      "sellerId": 1,
+      "productName": "product nameeee",
+      "description": "this is description",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "categoryId": 3,
+      "brandId": 1,
       "sellerId": 1,
       "productName": "product nameeee",
       "description": "this is description",
@@ -75,7 +204,7 @@
       "id": 1,
       "productId": 1,
       "sellerSku": "skuby",
-      "available": 2,
+      "available": 0,
       "color": "red",
       "size": 45,
       "height": 40,
@@ -83,28 +212,25 @@
       "length": 43,
       "weight": 32,
       "price": 34,
-      "quantity": 10,
-            "images": [
-              {
-                "id": 1,
-                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
-                "skuId": 1
-              },
-              {
-                "id": 2,
-                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
-                "skuId": 1
-              },
-              {
-                "id": 2,
-                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
-                "skuId": 1
-              }
-            ]
+      "quantity": 0,
+      "images": [
+        {
+          "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+          "skuId": 1
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+          "skuId": 1
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+          "skuId": 1
+        }
+      ]
     },
     {
       "id": 2,
-      "productId": 1,
+      "productId": 2,
       "sellerSku": "two",
       "available": 20,
       "color": "black",
@@ -114,26 +240,103 @@
       "length": 43,
       "weight": 32,
       "price": 34,
-            "images": [
-              {
-                "id": 5,
-                "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
-                "skuId": 2
-              },
-              {
-                "id": 6,
-                "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
-                "skuId": 2
-              },
-              {
-                "id": 7,
-                "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
-                "skuId": 2
-              }
-            ]
+      "images": [
+        {
+          "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+          "skuId": 2
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+          "skuId": 2
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+          "skuId": 2
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "productId": 3,
+      "sellerSku": "skuby",
+      "available": 2,
+      "color": "red",
+      "size": 45,
+      "height": 40,
+      "width": 43,
+      "length": 43,
+      "weight": 32,
+      "price": 34,
+      "images": [
+        {
+          "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+          "skuId": 1
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+          "skuId": 1
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+          "skuId": 1
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "productId": 4,
+      "sellerSku": "two",
+      "available": 20,
+      "color": "black",
+      "size": 40,
+      "height": 40,
+      "width": 43,
+      "length": 43,
+      "weight": 32,
+      "price": 34,
+      "images": [
+        {
+          "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+          "skuId": 2
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+          "skuId": 2
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+          "skuId": 2
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "productId": 2,
+      "sellerSku": "three",
+      "available": 20,
+      "color": "do",
+      "size": 10,
+      "height": 40,
+      "width": 43,
+      "length": 43,
+      "weight": 32,
+      "price": 34,
+      "images": [
+        {
+          "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
+          "skuId": 2
+        },
+        {
+          "skuId": 2,
+          "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png"
+        },
+        {
+          "url": "https://vn-live.slatic.net/p/9e5ca49e64b00cbcb57a5c7ebfc93400.png",
+          "skuId": 2
+        }
+      ]
     }
   ],
-
   "orders": [
     {
       "id": 1,
@@ -203,6 +406,14 @@
           "variation": "size and color",
           "itemPrice": 30000,
           "quantity": 1,
+          "image": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png"
+        },
+        {
+          "skuId": "2",
+          "name": "product nameeee",
+          "variation": "black 40",
+          "itemPrice": "34",
+          "quantity": "2",
           "image": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png"
         }
       ]

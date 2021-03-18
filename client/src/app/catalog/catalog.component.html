@@ -30,19 +30,20 @@
     <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
 
     <div class="esh-catalog-items row">
-      <div class="esh-catalog-item col-md-4"
-        *ngFor="let product of catalog?.data">
-        <img src="{{product.skus[0].images[0].url}}" class="esh-catalog-thumnail" />
-        <button [ngClass]="{'esh-catalog-button': true, 'is-disabled': !authenticated}" >
-          [ADD TO CART]
-        </button>
-        <div class="esh-catalog-name">
-          <span>{{product.productName}}</span>
+        <div class="esh-catalog-item col-md-4" *ngFor="let product of catalog?.data">
+      <a routerLink="/products/{{product.id}}">
+          <img src="{{product.skus[0].images[0].url}}" class="esh-catalog-thumnail" />
+          <!-- <button [ngClass]="{'esh-catalog-button': true, 'is-disabled': !authenticated}" >
+                [ADD TO CART]
+              </button> -->
+          <div class="esh-catalog-name">
+            <span>{{product.productName}}</span>
+          </div>
+          <div class="esh-catalog-price">
+            <span>{{product.skus[0].price | number:'.2-2'}}</span>
+          </div>
+      </a>
         </div>
-        <div class="esh-catalog-price">
-          <span>{{product.skus[0].price | number:'.2-2'}}</span>
-        </div>
-      </div>
     </div>
   <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
   </div>

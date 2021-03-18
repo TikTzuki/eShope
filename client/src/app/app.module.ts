@@ -13,9 +13,10 @@ import { CatalogModule } from './catalog/catalog.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ProductDetailsModule } from './product-details/productDetails.module';
 import { CartModule } from './cart/cart.module';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 @NgModule({
-  declarations: [	
-    AppComponent,
+  declarations: [		
+    AppComponent
    ],
   imports: [
     BrowserAnimationsModule,
@@ -26,6 +27,7 @@ import { CartModule } from './cart/cart.module';
     // TODO: T_T
     SharedModule.forRoot(),
     FontAwesomeModule,
+    SlickCarouselModule,
     CatalogModule,
     ProductDetailsModule,
     CartModule

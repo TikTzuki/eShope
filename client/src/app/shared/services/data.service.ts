@@ -25,14 +25,17 @@ export class DataService {
       );
   }
 
-  postWithId(url: string, data: any, params?: any): Observable<Response>{
-    return this.doPost(url, data, true, params);
-  }
+  // postWithId(url: string, data: any, params?: any): Observable<Response>{
+  //   return this.doPost(url, data, true, params);
+  // }
 
   post(url:string, data:any, params?: any): Observable<Response>{
     return this.doPost(url, data, false, params);
   }
 
+  put(url: string, data:any, params?: any):Observable<Response>{
+    return this.doPut(url, data, false, params);
+  }
   putWithId(url:string, data:any, params: any): Observable<Response>{
     return this.doPut(url, data, true, params);
   }

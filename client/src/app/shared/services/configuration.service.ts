@@ -16,7 +16,6 @@ export class ConfigurationService {
 
   constructor(private http: HttpClient, private storageService: StorageService) {
     // TODO: remove this stuff
-    console.log('test-spring');
     const username = 'root';
     const password = 'password';
     const headers = new HttpHeaders({
@@ -45,7 +44,7 @@ export class ConfigurationService {
       this.storageService.store('activateCampaignDetailFunction', this.serverSettings.activateCampaignDetailFunction);
       this.isReady = true;
       this.settingsLoadedSource.next();
-    })
+    });
   }
 }
 

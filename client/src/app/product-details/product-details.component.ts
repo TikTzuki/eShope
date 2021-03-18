@@ -13,24 +13,50 @@ import { FormControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { CartService } from '../cart/cart.service';
+import numberOnly from '../shared/util/validate';
+import { ICartItem } from '../shared/models/cartItem.model';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.css']
+  styleUrls: ['./product-details.component.scss']
 })
 export class ProductDetailsComponent implements OnInit {
   authSubscription: Subscription;
   authenticated: boolean;
   product: IProduct;
   selectedSku: ISku;
-  quantity: number;
+  selectedImageUrl: string;
+  quantity: number = 0;
   skuForm: FormGroup;
+    slideConfig = {
+    "slidesToShow": 2,
+    "slidesToScroll": 1,
+    "nextArrow": "<div class='nav-btn next-slide'></div>",
+    "prevArrow": "<div class='nav-btn prev-slide'></div>",
+    // "dots": true,
+    // "infinite": false
+  };
+  slickInit(e) {
+    console.log('slick initialized');
+  }
+
+  breakpoint(e) {
+    console.log('breakpoint');
+  }
+
+  afterChange(e) {
+    console.log('afterChange');
+  }
+
+  beforeChange(e) {
+    console.log('beforeChange');
+  }
   constructor(
     private route: ActivatedRoute,
     private service: ProductDetailService,
     private configurationService: ConfigurationService,
-    private cartService: CartWrapperService,
+    private cartEventService: CartWrapperService,
     private formBuilder: FormBuilder,
     private sercurityService: SecurityService) {
       this.authenticated = sercurityService.IsAuthorized;
@@ -53,19 +79,17 @@ export class ProductDetailsComponent implements OnInit {
   loadData() {
     const routeParams = this.route.snapshot.paramMap;
     const productId = Number(routeParams.get('productId'));
-
     this.loadProduct(productId);
   }
 
   loadFromSku(): void {
-    const byParams = `{"skuId":"${this.selectedSku.id
+    this.skuForm = this.formBuilder.group({
+      byParams: new FormControl(`{"skuId":"${this.selectedSku.id
       }", "name":"${this.product.productName
-      }", "variation":"${this.selectedSku.color + this.selectedSku.size
+      }", "variation":"${this.selectedSku.color +' '+ this.selectedSku.size
       }", "itemPrice":"${this.selectedSku.price
       }", "quantity":"${this.quantity
-      }" }`;
-    this.skuForm = this.formBuilder.group({
-      byParams: {byParams}
+      }", "image":"${this.selectedSku.images[0].url}" }`)
     });
   }
 
@@ -74,14 +98,16 @@ export class ProductDetailsComponent implements OnInit {
       .subscribe(product => {
         this.product = product;
         this.selectedSku = product.skus[0];
+        this.selectedImageUrl = this.selectedSku.images[0].url;
         this.loadFromSku();
       });
   }
 
   addToCart(event: any) {
     // this.basketService.addItemToBasket(item);
-    const orderItem = JSON.parse(this.skuForm.value.byParams);
-    this.cartService.addItemToCart(orderItem);
+    const cartItem: ICartItem = JSON.parse(this.skuForm.value.byParams);
+    
+    this.cartEventService.addItemToCart(cartItem);
 
   }
 
@@ -89,14 +115,19 @@ export class ProductDetailsComponent implements OnInit {
     this.selectedSku = value;
   }
 
+  onImageSelected(event:any, value: string){
+    this.selectedImageUrl = value;
+  }
+
   onQuantityChanged(event: any) {
-    if (event.target.value > this.selectedSku.available) {
+    if(event.target.value > this.selectedSku.available){
       event.target.value = this.selectedSku.available;
+      this.quantity = this.selectedSku.available;
     }
-    if(event.target.value === ""){
-      event.target.value = 0;
-    }
-    this.quantity = event.target.value;
     this.loadFromSku();
+  }
+
+  numberOnly(event: any){
+    return numberOnly(event);
   }
 }
