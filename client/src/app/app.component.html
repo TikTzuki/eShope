@@ -1,36 +1,38 @@
 <header class="esh-app-header">
-  <div class="container">
-    <article class="row">
-      <section class="col-lg-7 col-md-6 col-12">
-        <a routerLink="catalog" class="navbar-brand">
-          <img src="assets/images/logo.gif" width="200">
-        </a>
-      </section>
-      <section class="col-lg-4 col-md-5 col-12">
-        <app-identity></app-identity>
-      </section>
-      <section class="col-lg-1 col-12">
-        <fa-icon icon="shopping-basket"></fa-icon>
-        <app-cart-status></app-cart-status>
-      </section>
-    </article>
-  </div>
+    <div class="container">
+        <article class="row">
+            <section class="col-lg-7 col-md-6 col-12">
+                <a href="/" class="navbar-brand">
+                    <img src="assets/images/logo.gif" width="200">
+                </a>
+            </section>
+            <section class="col-lg-4 col-md-5 col-12">
+                <app-identity></app-identity>
+            </section>
+            <section class="col-lg-1 col-12">
+                <fa-icon icon="shopping-basket"></fa-icon>
+                <app-cart-status></app-cart-status>
+            </section>
+        </article>
+    </div>
 </header>
 <!-- component routing placeholder -->
-<div class="container">
-  <router-outlet></router-outlet>
+<div class="main-content">
+    <div class="container">
+        <router-outlet></router-outlet>
+    </div>
 </div>
 
 <footer class="esh-app-footer">
-  <div class="container">
-    <article class="row">
-      <section class="col-sm-6">
-        <img src="assets/images/logo.jpg" width="200" alt="" class="esh-app-footer-brand">
-      </section>
-      <section class="col-sm-6">
-        Designed By @TikTzuki
-        <!-- <img src="assets/images/main_footer_text.png" alt="footer text image" class="esh-app-footer-text hidden" width="335" height="26"> -->
-      </section>
-    </article>
-  </div>
+    <div class="container">
+        <article class="row">
+            <section class="col-sm-6">
+                <img src="assets/images/logo.jpg" width="200" alt="" class="esh-app-footer-brand">
+            </section>
+            <section class="col-sm-6">
+                Designed By @TikTzuki
+                <!-- <img src="assets/images/main_footer_text.png" alt="footer text image" class="esh-app-footer-text hidden" width="335" height="26"> -->
+            </section>
+        </article>
+    </div>
 </footer>

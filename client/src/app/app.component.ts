@@ -10,7 +10,7 @@ import { Title } from '@angular/platform-browser';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   Authenticated: boolean = false;
@@ -18,20 +18,19 @@ export class AppComponent {
 
  constructor(
    private titleService: Title,
-  //  private securityService: SecurityService,
+   private securityService: SecurityService,
    private configurationService: ConfigurationService,
    private signalrService: SignalrService,
    private toastr: ToastrService,
    vcr: ViewContainerRef
  ) {
-    // this.Authenticated = this.securityService.IsAuthorized; 
+    this.Authenticated = this.securityService.IsAuthorized; 
  }
 
  ngOnInit(): void {
     console.log('app on init');
-    // this.subscription = this.securityService.authenticationChallenge$.subscribe(res => this.Authenticated = res);
-
-    console.log('configuration');
+    this.subscription = this.securityService.authenticationChallenge$.subscribe(res => this.Authenticated = res);
+    
     this.configurationService.load(); 
  }
 

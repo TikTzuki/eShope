@@ -3,7 +3,7 @@ export interface IOrderItem{
   id: number;
   order_id: number;
   sku_id: number;
-  name: number;
+  name: string;
   variation: string;
   itemPrice: number;
   quantity: number;

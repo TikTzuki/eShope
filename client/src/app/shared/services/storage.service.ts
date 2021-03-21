@@ -7,7 +7,7 @@ export class StorageService {
   private storage: any;
 
   constructor() {
-    this.storage = sessionStorage; //localStorage
+    this.storage = localStorage; // sessionStorage;
    }
 
    public retrieve(key: string): any {

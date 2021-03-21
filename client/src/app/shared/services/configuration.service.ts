@@ -15,13 +15,15 @@ export class ConfigurationService {
   listServer: ListServer = new ListServer();
 
   constructor(private http: HttpClient, private storageService: StorageService) {
+    console.log('constructor');
+    
     // TODO: remove this stuff
-    const username = 'root';
-    const password = 'password';
-    const headers = new HttpHeaders({
-      Authorization: 'Basic ' + btoa(username + ':' + password),
-      'Access-Control-Allow-Headers': 'Content-Type'
-    });
+    // const username = 'root';
+    // const password = 'password';
+    // const headers = new HttpHeaders({
+    //   Authorization: 'Basic ' + btoa(username + ':' + password),
+    //   'Access-Control-Allow-Headers': 'Content-Type'
+    // });
     // http.get(this.listServer.springServer, {headers, responseType:'text' as 'json'}).subscribe((response)=>{
     //   console.log(response);
     // });
@@ -31,6 +33,7 @@ export class ConfigurationService {
   }
 
   load(){
+    console.log('load()');
     let baseURI = document.baseURI.endsWith('/') ? document.baseURI : `${document.baseURI}/`;
     //Todo: jus for test
     baseURI = 'http://localhost:3000/';

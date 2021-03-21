@@ -11,41 +11,41 @@ import { SignalrService } from '../../services/signalr.service';
 export class Identity implements OnInit {
   authenticated: boolean = false;
   private subscription!: Subscription;
-  private userNmae: string = '';
+  private userNane: string = '';
 
   constructor(private service: SecurityService, private signalrService: SignalrService) { }
 
   ngOnInit(): void {
-    this.subscription = this.service.authenticationChallenge$.subscribe(res=>{
+    this.subscription = this.service.authenticationChallenge$.subscribe(res => {
       this.authenticated = res;
-      this.userNmae = this.service.UserData.email;
+      this.userNane = this.service.UserData.email;
     });
 
-    if(window.location.hash){
+    if (window.location.hash) {
       this.service.AuthorizedCallBack();
     }
 
-    console.log('identity component, checking authorized' + this.service.IsAuthorized);
+    console.log('checking authorized' + this.service.IsAuthorized);
     this.authenticated = this.service.IsAuthorized;
 
-    if(this.authenticated){
-      if(this.service.UserData){
-        this.userNmae = this.service.UserData.email;
+    if (this.authenticated) {
+      if (this.service.UserData) {
+        this.userNane = this.service.UserData.email;
       }
     }
   }
 
-  logoutClicked(event: any){
+  logoutClicked(event: any): void {
     event.preventDefault();
     console.log('Logout clicked');
     this.logout();
   }
 
-  login(){
+  login(): void{
     this.service.Authorize();
   }
 
-  logout(){
+  logout(): void{
     this.signalrService.stop();
     this.service.Logoff();
   }

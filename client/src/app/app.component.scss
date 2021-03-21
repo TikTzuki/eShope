@@ -1,0 +1,13 @@
+@import 'variable';
+.esh-app-header {
+    background-color: $color-background-brighter;
+    filter: "progid: DXImageTransform.Microsoft.gradient(startColorstr='#003e52', endColorstr='#1a9cb7', GradientType=1)";
+    width: 100%;
+    // position: fixed;
+    z-index: 300;
+}
+
+.main-content {
+    background-color: $color-background-bright;
+    padding: 15px 0;
+}

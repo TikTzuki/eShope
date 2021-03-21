@@ -37,21 +37,7 @@ export class ProductDetailsComponent implements OnInit {
     // "dots": true,
     // "infinite": false
   };
-  slickInit(e) {
-    console.log('slick initialized');
-  }
 
-  breakpoint(e) {
-    console.log('breakpoint');
-  }
-
-  afterChange(e) {
-    console.log('afterChange');
-  }
-
-  beforeChange(e) {
-    console.log('beforeChange');
-  }
   constructor(
     private route: ActivatedRoute,
     private service: ProductDetailService,
@@ -104,9 +90,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addToCart(event: any) {
-    // this.basketService.addItemToBasket(item);
     const cartItem: ICartItem = JSON.parse(this.skuForm.value.byParams);
-    
     this.cartEventService.addItemToCart(cartItem);
 
   }

@@ -19,17 +19,23 @@ export class CartWrapperService {
   private addItemToCartSource = new Subject<ICartItem>();
   addItemToCart$ = this.addItemToCartSource.asObservable();
 
+  private updateBagedSource = new Subject<ICartItem>();
+  updateBage$ = this.updateBagedSource.asObservable();
+
   private orderCreatedSouce = new Subject();
   orderCreated$ = this.orderCreatedSouce.asObservable();
 
   addItemToCart(item: ICartItem){
-    // if(this.identityService.IsAuthorized){
-      console.log(item);
-      
+    if(this.identityService.IsAuthorized){
+      // TODO: Can mapping from sku to cart item here!!!
       this.addItemToCartSource.next(item);
-    // } else {
-      // this.identityService.Authorize();
-    // }
+    } else {
+      this.identityService.Authorize();
+    }
+  }
+
+  updateBadge(){
+    this.updateBagedSource.next();
   }
 
   orderCreate(){

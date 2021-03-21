@@ -13,6 +13,7 @@ export interface ICustomer{
 }
 
 export interface IAddress{
+  id: number;
   street: string;
   address1: string;
   address2: string;

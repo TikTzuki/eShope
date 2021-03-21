@@ -1,11 +1,8 @@
-<a class="cartstatus"
-  [ngClass]="{'is-disabled': badge < 1}"
-  [routerLink]="['cart']"
-  >
-  <div class="cartstatus-image">
-    <fa-icon icon="shopping-cart"></fa-icon>
-  </div>
-  <div class="cartstatus-badge">
-    {{badge}}
-  </div>
+<a class="cartstatus" [ngClass]="(badge<1)?'is-disabled':''" [routerLink]="['cart']">
+    <div class="cartstatus-image">
+        <fa-icon icon="shopping-cart"></fa-icon>
+    </div>
+    <div class="cartstatus-badge">
+        {{badge}}
+    </div>
 </a>

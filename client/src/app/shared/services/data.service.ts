@@ -30,6 +30,7 @@ export class DataService {
   // }
 
   post(url:string, data:any, params?: any): Observable<Response>{
+    console.log('post',url ,data);
     return this.doPost(url, data, false, params);
   }
 
@@ -56,12 +57,13 @@ export class DataService {
   private doPut(url: string, data: any, needId: boolean, param?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options, needId);
-
+    console.log('do put', data);
     return this.http.put(url, data, options)
       .pipe(
-        tap((res: Response) => {
+        tap( (res: Response) => {
+          console.log(res);
           return res;
-        }),
+        } ),
         catchError(this.handleError)
       )
   }
@@ -89,12 +91,12 @@ export class DataService {
 
   private setHeaders(options: any, needId?: boolean){
     if(needId && this.securityService){
-      options["headers"] = new HttpHeaders()
-        .append('authorization', 'Bearer' + this.securityService.GetToken())
+      options.headers = new HttpHeaders()
+        .append('Authorization', 'Bearer' + this.securityService.GetToken())
         .append('x-requestid', Guid.newGuid());
     }else if( this.securityService){
-      options["headers"] = new HttpHeaders()
-        .append('authorization', 'Bearer ' + this.securityService.GetToken());
+      options.headers = new HttpHeaders()
+        .append('Authorization', 'Bearer ' + this.securityService.GetToken());
     }
   }
 }

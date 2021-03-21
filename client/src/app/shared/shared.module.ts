@@ -11,6 +11,9 @@ import { StorageService } from './services/storage.service';
 import { SignalrService } from './services/signalr.service';
 import { Pager } from './components/pager/pager.component';
 import { CartWrapperService } from './services/cart.wrapper.service';
+import { ModalComponent } from './components/modal/modal.component';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -34,7 +37,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     Header,
     Identity,
     PageNotFoundComponent,
-    UppercasePipe
+    ModalComponent,
+    UppercasePipe,
   ],
   exports: [
     //Module
@@ -48,10 +52,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     Header,
     Identity,
     PageNotFoundComponent,
-    UppercasePipe
+    ModalComponent,
+    UppercasePipe,
   ]
 })
 export class SharedModule {
+   constructor(library: FaIconLibrary){
+    library.addIconPacks(fas);
+   }
   static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
@@ -60,7 +68,7 @@ export class SharedModule {
         SecurityService,
         ConfigurationService,
         StorageService,
-        SignalrService,
+        // SignalrService,
         CartWrapperService,
         Pager
       ]

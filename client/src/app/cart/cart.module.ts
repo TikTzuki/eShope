@@ -6,12 +6,12 @@ import { SharedModule } from '../shared/shared.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
-  imports: [SharedModule, FontAwesomeModule],
+  imports: [SharedModule, FontAwesomeModule ],
   declarations: [CartComponent, CartStatusComponent],
   providers: [CartService],
-  exports: [CartStatusComponent ]
+  exports: [CartStatusComponent]
 })
 export class CartModule{
    constructor(library: FaIconLibrary){

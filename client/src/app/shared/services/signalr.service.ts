@@ -39,9 +39,10 @@ private  SignalrHubUrl: string = '';
 
   private init(){
     if(this.securityService.IsAuthorized == true){
-      this.register();
-      this.stablishConnection();
-      this.registerHandlers();
+      // TODO: DO FOR EVERY CONNECTION
+      // this.register();
+      // this.stablishConnection();
+      // this.registerHandlers();
     }
   }
 

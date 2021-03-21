@@ -37,6 +37,7 @@ create_date TEXT,
 update_date TEXT,
 payment_method TEXT,
 shipping_fee INTEGER,
+shipping_address TEXT,
 total_price INTEGER,
 status TEXT,
 FOREIGN KEY (customer_id) REFERENCES customer(id) );

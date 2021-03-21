@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import './app/variable';
+@import "../node_modules//bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
+:root {
+    a:hover,
+    a:visited,
+    a:active {
+        color: $color-secondary;
+        text-decoration: none;
+        outline: none;
+    }
+}
+
+// $primary: #0074d9;
+// $danger: #ff4136;
+// $theme-colors: ( "primary": $primary, "sencondary": $danger);
+$theme-colors: ( "primary": $color-primary, "secondary": $color-secondary);
+// Merge the maps
+// $theme-colors: map-merge($theme-colors, $custom-colors);
+// $theme-colors: map-remove($theme-colors, "info", "light", "dark");
+@import "bootstrap";

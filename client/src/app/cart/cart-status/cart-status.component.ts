@@ -40,6 +40,18 @@ export class CartStatusComponent implements OnInit {
         });
       });
 
+    this.cartItemAddedSubscription = this.cartEvents.updateBage$.subscribe(
+      item => {
+        console.log('removed item from cart');
+        // this.service.removeCartItem(item).subscribe(res => {
+        this.service.getCart().subscribe(cart => {
+            if (cart) {
+              this.badge = cart.items.length;
+            }
+          });
+        // });
+      }
+    );
       // Subcribe to Drop Basket Observable:
     this.cartDroppedSubscription = this.service.cartDroped$.subscribe(res => {
       this.badge = 0;

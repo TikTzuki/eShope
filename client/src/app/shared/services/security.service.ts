@@ -19,6 +19,8 @@ export class SecurityService {
   authenticationChallenge$ = this.authenticationSource.asObservable();
   private authorityUrl = '';
 
+  public UserData: any;
+  public IsAuthorized!: boolean;
   constructor(
     private _http: HttpClient, 
     private _router: Router,
@@ -26,6 +28,7 @@ export class SecurityService {
     private _configurationService: ConfigurationService,
     private _storageService: StorageService
   ) {
+    console.log('constructor');
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json');
     this.headers.append('Accept', 'application/json');
@@ -42,8 +45,6 @@ export class SecurityService {
     }
   }
 
-  public IsAuthorized!: boolean;
-
   public GetToken(): any {
     return this.storage.retrieve('authorizationData');
   }
@@ -56,30 +57,30 @@ export class SecurityService {
     this.storage.store('IsAuthorized', false);
   }
 
-  public UserData: any;
-
-  public SetAuthorizationData(token: any, id_token: any) {
+  public SetAuthorizationData(token: any, idToken: any) {
     if (this.storage.retrieve('authorizationData') !== '') {
       this.storage.store('authorizationData', '');
     }
 
     this.storage.store('authorizationData', token);
-    this.storage.store('authorizationDataIdToken', id_token);
+    this.storage.store('authorizationDataIdToken', idToken);
     this.IsAuthorized = true;
     this.storage.store('IsAuthorized', true);
 
-    this.getUserData()
-      .subscribe(data => {
-        this.UserData = data;
-        this.storage.store('userData', data);
-        //emit observable
-        this.authenticationSource.next(true);
-        window.location.href = location.origin;
-      },
-        error => this.HandleError(error),
-        () => {
-          console.log(this.UserData);
-        });
+    // TODO: replace for get user data
+  this.UserData = this.storage.retrieve('userData');
+  //   this.getUserData()
+  //     .subscribe(data => {
+  //       this.UserData = data;
+  //       this.storage.store('userData', data);
+  //       //emit observable
+  //       this.authenticationSource.next(true);
+  //       window.location.href = location.origin;
+  //     },
+  //       error => this.HandleError(error),
+  //       () => {
+  //         console.log(this.UserData);
+  //       });
   }
 
   public Authorize() {
@@ -89,7 +90,7 @@ export class SecurityService {
     let client_id = 'js';
     let redirect_uri = location.origin + '/';
     let response_type = 'id_token token';
-    let scope = 'openid profile orders basker webshoppingagg orders.signalrhub';
+    let scope = 'openid profile orders cart webshoppingagg orders.signalrhub';
     let nonce = 'N' + Math.random() + '' + Date.now();
     let state = Date.now() + '' + Math.random();
 
@@ -104,7 +105,8 @@ export class SecurityService {
       'scope=' + encodeURI(scope) + '&' +
       'nonce=' + encodeURI(nonce) + '&' +
       'state=' + encodeURI(state);
-
+    console.log(url);
+    
     window.location.href = url;
   }
 
@@ -113,6 +115,13 @@ export class SecurityService {
 
     let hash = window.location.hash.substr(1);
 
+    /**
+     *  result = {
+     *  token: "tokenblabla",
+     *  id_token: "id_token.dataobjectEncoded",
+     *  state: "state df"
+     * }
+     */
     let result: any = hash.split('&').reduce(function (result: any, item: string) {
       let parts = item.split('=');
       result[parts[0]] = parts[1];
@@ -126,24 +135,25 @@ export class SecurityService {
     let authResponseIsValid = false;
 
     if (!result.error) {
-      if (result.state !== this.storage.retrieve('authStateControl')) {
-        console.log('AuthorizedCallbacl incorrect state');
-      } else {
+      // TODO: DO FOR AUTHORIZATION
+      // if (result.state !== this.storage.retrieve('authStateControl')) {
+      //   console.log('AuthorizedCallbacl incorrect state');
+      // } else {
         token = result.access_token;
         id_token = result.id_token;
 
-        let dataIdToken: any = this.getDataFromToken(id_token);
+        // let dataIdToken: any = this.getDataFromToken(id_token);
 
-        if (dataIdToken.nonce !== this.storage.retrieve('authNonce')) {
-          console.log('AuthorizedCallback incorrect nonce');
-        } else {
+        // if (dataIdToken.nonce !== this.storage.retrieve('authNonce')) {
+        //   console.log('AuthorizedCallback incorrect nonce');
+        // } else {
           this.storage.store('authNonce', '');
           this.storage.store('authStateControl', '');
 
           authResponseIsValid = true;
           console.log("AuthorizedCallback")
-        }
-      }
+        // }
+      // }
     }
 
     if (authResponseIsValid) {
@@ -198,7 +208,11 @@ export class SecurityService {
 
     if (typeof token !== 'undefined') {
       let encoded = token.split('.')[1];
-
+      /**
+       * data = {
+       * nonce: "45534534543543"
+       * }
+       */
       data = JSON.parse(this.urlBase64Decode(encoded));
     }
     return data;
@@ -209,6 +223,11 @@ export class SecurityService {
       this.authorityUrl = this.storage.retrieve('IdentityUrl');
     }
 
+    /**
+     * options = {
+     * headers: "HttpHeaders()"
+     * }
+     */
     const options = this.setHeaders();
 
     return this._http.get<string[]>(`${this.authorityUrl}/connect/userinfo`, options)
@@ -226,7 +245,7 @@ export class SecurityService {
     const token = this.GetToken();
 
     if(token !== ''){
-      httpOptions.headers = httpOptions.headers.set('Authorization', `Bearer ${token}`);
+      httpOptions.headers = httpOptions.headers.set('Authorization', `Bearer tokensercurity${token}`);
     }
     return httpOptions;
   }
