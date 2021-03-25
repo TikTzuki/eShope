@@ -6,19 +6,71 @@
                 <div class="alert alert-warning" role="alert">&nbsp;{{errorMessage}}</div>
             </div>
         </div>
-        <div class="list-header row">
-            <div class="checkbox-wrap">
-                <label class="next-checkbox list-header-checkbox">
+        <div class="container">
+            <div class="list-header row">
+                <div class="checkbox-wrap">
+                    <label class="next-checkbox list-header-checkbox">
                     <span class="next-checkbox-inner">
                         <i class="next-icon next-icon-select next-icon-xs"></i>
                     </span>
                     <input type="checkbox" aria-checked="false" value="on">
                 </label> Chon tat ca (1 san pham)
+                </div>
+                <div class="list-header-operations">
+                    <div class="btn-wrap automation-btn-delete">
+                        <fa-icon icon="trash"></fa-icon>
+                        <span class="list-header-operation-text">Xoa</span>
+                    </div>
+                </div>
             </div>
-            <div class="list-header-operations">
-                <div class="btn-wrap automation-btn-delete">
-                    <fa-icon icon="trash"></fa-icon>
-                    <span class="list-header-operation-text">Xoa</span>
+            <div class="checkout-shop-children" *ngFor="let item of cart?.items">
+                <div class="cart-item row">
+                    <section class="cart-item cart-item-left col-3 hidden-lg-down">
+                        <!-- TODO: handle hover and click -->
+                        <label class="next-checkbox cart-item-checkbox">
+                            <span class="next-checkbox-inner">
+                                <i class="next-icon next-icon-select next-icon-xs"></i>
+                            </span>
+                            <input type="checkbox" aria-checked="false" value="on">
+                        </label>
+                        <div class="img-wrap">
+                            <a href="#" class="automation-link-from-image-to-prod">
+                                <img src="{{item.image}}" class="cart-img">
+                            </a>
+                        </div>
+                    </section>
+                    <section class="cart-item cart-item--middle col-3">
+                        <a href="#" class="automation-link-from-title-to-prod title"> {{item.name}}</a>
+                        <a href="#" class="automation-link-from-sub-title-to-prod sku"> {{item.name}}</a>
+                    </section>
+                    <section class="cart-item cart-item--middle col-2">
+                        <p class="current-price">{{item.itemPrice}} đ</p>
+                        <div class="operations" (click)="removeCartItem($event, item)">
+                            <fa-icon icon="trash" class="delete"></fa-icon>
+                        </div>
+                    </section>
+                    <section class="cart-item cart-item--middle col-2">
+                        <div class="quantity">
+                            <div class="next-number-picker">
+                                <span class="next-number-picker-handler-down-inner" (click)="itemQuantityChangedDown(item)" [ngClass]="(item.quantity===1)?'next-number-picker-disabled':''">
+                                <fa-icon icon="minus"></fa-icon>
+                            </span>
+                                <span class="next-number-picker-input">
+                            <input [id]="'quantity'+item.skuId" type="text" min="1"
+                             [(ngModel)]="item.quantity" 
+                             (change)="itemQuantityChanged(item)" />
+                            </span>
+                                <span class="next-number-picker-handler-up-inner" (click)="itemQuantityChangedUp(item)">
+                                <fa-icon icon="plus"></fa-icon>
+                            </span>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="cart-item cart-item--middle cart-item--mark col-2">
+                        <p class="sub-price">
+                            {{(item.itemPrice * item.quantity) | number:'.1-1'}}
+                        </p>
+                    </section>
                 </div>
             </div>
         </div>
@@ -29,57 +81,6 @@
             <section class="cart-title col-2">Quantity</section>
             <section class="cart-title col-2">Cost</section>
         </article> -->
-
-        <div class="checkout-shop-children" *ngFor="let item of cart?.items">
-            <div class="cart-item row">
-                <section class="cart-item cart-item-left col-3 hidden-lg-down">
-                    <!-- TODO: handle hover and click -->
-                    <label class="next-checkbox cart-item-checkbox">
-                            <span class="next-checkbox-inner">
-                                <i class="next-icon next-icon-select next-icon-xs"></i>
-                            </span>
-                            <input type="checkbox" aria-checked="false" value="on">
-                        </label>
-                    <div class="img-wrap">
-                        <a href="#" class="automation-link-from-image-to-prod">
-                            <img src="{{item.image}}" class="cart-img">
-                        </a>
-                    </div>
-                </section>
-                <section class="cart-item cart-item--middle col-3">
-                    <a href="#" class="automation-link-from-title-to-prod title"> {{item.name}}</a>
-                    <a href="#" class="automation-link-from-sub-title-to-prod sku"> {{item.name}}</a>
-                </section>
-                <section class="cart-item cart-item--middle col-2">
-                    <p class="current-price">{{item.itemPrice}} đ</p>
-                    <div class="operations" (click)="removeCartItem($event, item)">
-                        <fa-icon icon="trash" class="delete"></fa-icon>
-                    </div>
-                </section>
-                <section class="cart-item cart-item--middle col-2">
-                    <div class="quantity">
-                        <div class="next-number-picker">
-                            <span class="next-number-picker-handler-down-inner" (click)="itemQuantityChangedDown(item)" [ngClass]="(item.quantity===1)?'next-number-picker-disabled':''">
-                                <fa-icon icon="minus"></fa-icon>
-                            </span>
-                            <span class="next-number-picker-input">
-                            <input [id]="'quantity'+item.skuId" type="text" min="1"
-                             [(ngModel)]="item.quantity" 
-                             (change)="itemQuantityChanged(item)" />
-                            </span>
-                            <span class="next-number-picker-handler-up-inner" (click)="itemQuantityChangedUp(item)">
-                                <fa-icon icon="plus"></fa-icon>
-                            </span>
-                        </div>
-                    </div>
-                </section>
-                <section class="cart-item cart-item--middle cart-item--mark col-2">
-                    <p class="sub-price">
-                        {{(item.itemPrice * item.quantity) | number:'.1-1'}}
-                    </p>
-                </section>
-            </div>
-        </div>
     </div>
 
     <div class="col-4">
@@ -87,7 +88,7 @@
             <div class="summary-section-content">
                 <div class="location checkout-location-control automation-checkout-location-control"> <span class="location-label"> Address</span>
                     <div class="location-body">
-                        <fa-icon icon="map-marker-alt"></fa-icon>
+                        <i class="fas fa-map-marker-alt"></i>
                         <div class="location-address">
                             <select [(ngModel)]="addressJsonString" class="address-select">
                                 <option *ngFor="let address of addressList; index as i"

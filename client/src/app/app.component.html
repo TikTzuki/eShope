@@ -1,24 +1,28 @@
 <header class="esh-app-header">
     <div class="container">
         <article class="row">
-            <section class="col-lg-7 col-md-6 col-12">
-                <a href="/" class="navbar-brand">
-                    <img src="assets/images/logo.gif" width="200">
-                </a>
+            <section class="col-lg-6 col-md-3 col-12">
+                <div class="brand">
+                    <a href="/" class="navbar-brand">
+                        <img src="assets/images/logo.gif" width="200">
+                    </a>
+                </div>
             </section>
-            <section class="col-lg-4 col-md-5 col-12">
+            <!-- <section class="col-lg-4 hidden-md-down"></section> -->
+            <section class="col-lg-5 col-md-8 col-1 identity-container">
                 <app-identity></app-identity>
             </section>
-            <section class="col-lg-1 col-12">
-                <fa-icon icon="shopping-basket"></fa-icon>
-                <app-cart-status></app-cart-status>
+            <section class="col-lg-1 col-md-1 col-1">
+                <div style="padding-top: 5px;">
+                    <app-cart-status></app-cart-status>
+                </div>
             </section>
         </article>
     </div>
 </header>
 <!-- component routing placeholder -->
-<div class="main-content">
-    <div class="container">
+<div class="content-background">
+    <div class="container main-content">
         <router-outlet></router-outlet>
     </div>
 </div>

@@ -6,18 +6,24 @@
 @import "../node_modules/bootstrap/scss/mixins";
 :root {
     a:hover,
-    a:visited,
     a:active {
-        color: $color-secondary;
+        color: $color-secondary-darker;
         text-decoration: none;
         outline: none;
+    }
+    a {
+        color: $color-foreground-dark;
+    }
+    img {
+        width: 100%;
+        height: auto;
     }
 }
 
 // $primary: #0074d9;
 // $danger: #ff4136;
 // $theme-colors: ( "primary": $primary, "sencondary": $danger);
-$theme-colors: ( "primary": $color-primary, "secondary": $color-secondary);
+$theme-colors: ( "primary": $color-primary, "secondary": $color-secondary, "light": $color-foreground-bright);
 // Merge the maps
 // $theme-colors: map-merge($theme-colors, $custom-colors);
 // $theme-colors: map-remove($theme-colors, "info", "light", "dark");

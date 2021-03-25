@@ -2,14 +2,16 @@
     <div class="container">
         <article class="esh-pager-wrapper row">
             <nav>
-                <button class="btn btn-primary btn-sm esh-pager-item esh-pager-item--navigable" id="Previous" [ngClass]="{'is-disabled': buttonStates?.previousDeisabled}" (click)="onPreviousClicked($event)" aria-label="Previous">
-          Previous
-      </button>
-                <span class="esh-pager-item">
-            Showing {{model?.items}} of {{model?.totalItems}} products - Page {{model?.actualPage +1}} - {{model?.totalPages}}
-          </span>
+                <button class="btn btn-primary btn-sm esh-pager-item esh-pager-item--navigable" id="Previous" [ngClass]="{'is-disabled': buttonStates?.previousDisabled}" (click)="onPreviousClicked($event)" aria-label="Previous">
+                    Previous
+                </button>
+                <!-- <span class="esh-pager-item">
+                    Showing {{model?.items}} of {{model?.totalItems}} products - Page {{model?.actualPage +1}} -
+                    {{model?.totalPages}}
+                </span> -->
+                <button class="btn btn-sm page-button" *ngFor="let page of pageNumber" [ngClass]="(model.actualPage==page)?'btn-primary':'btn-light'">{{page}}</button>
                 <button class="btn btn-primary btn-sm esh-pager-item esh-pager-item--navigable" id="Next" [ngClass]="{'is-disabled': buttonStates?.nextDisabled}" (click)="onNextClicked($event)" aria-label="Next">
-           Next</button>
+                    Next</button>
             </nav>
         </article>
     </div>

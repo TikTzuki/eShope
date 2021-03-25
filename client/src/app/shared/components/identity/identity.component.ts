@@ -6,7 +6,7 @@ import { SignalrService } from '../../services/signalr.service';
 @Component({
   selector: 'app-identity',
   templateUrl: './identity.component.html',
-  styleUrls: ['./identity.component.css']
+  styleUrls: ['./identity.component.scss']
 })
 export class Identity implements OnInit {
   authenticated: boolean = false;
@@ -19,6 +19,8 @@ export class Identity implements OnInit {
     this.subscription = this.service.authenticationChallenge$.subscribe(res => {
       this.authenticated = res;
       this.userNane = this.service.UserData.email;
+      console.log(this.userNane);
+      
     });
 
     if (window.location.hash) {

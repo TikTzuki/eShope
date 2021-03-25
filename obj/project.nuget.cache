@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Fc/mWoStT2DUBhZULdY3o52gRZPT/oA90NECAEjmwey3R50mVZXTWMm88go8zRDyeeSu3hx+VOZWd9viprFUQg==",
+  "dgSpecHash": "dP1Za9/YerCrgosDGkQY6Oc0+YSu5z8eJPd/AMV7sdtNrrEMVw7DHQHFkywxxxbkBo/13tS9DjmVyEBX/sQBoQ==",
   "success": true,
-  "projectFilePath": "D:\\repositories\\eShop\\eeShop.csproj",
+  "projectFilePath": "d:\\repositories\\eShop\\eeShop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\VIVOBOOK\\.nuget\\packages\\microsoft.data.sqlite.core\\5.0.3\\microsoft.data.sqlite.core.5.0.3.nupkg.sha512",
     "C:\\Users\\VIVOBOOK\\.nuget\\packages\\microsoft.dotnet.platformabstractions\\3.1.6\\microsoft.dotnet.platformabstractions.3.1.6.nupkg.sha512",

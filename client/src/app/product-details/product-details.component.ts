@@ -29,11 +29,11 @@ export class ProductDetailsComponent implements OnInit {
   selectedImageUrl: string;
   quantity: number = 0;
   skuForm: FormGroup;
-    slideConfig = {
-    "slidesToShow": 2,
-    "slidesToScroll": 1,
-    "nextArrow": "<div class='nav-btn next-slide'></div>",
-    "prevArrow": "<div class='nav-btn prev-slide'></div>",
+  slideConfig = {
+    slidesToShow: 2,
+    slidesToScroll: 1
+    // "nextArrow": "<div class='nav-btn next-slide'></div>",
+    // "prevArrow": "<div class='nav-btn prev-slide'></div>",
     // "dots": true,
     // "infinite": false
   };
@@ -68,7 +68,7 @@ export class ProductDetailsComponent implements OnInit {
     this.loadProduct(productId);
   }
 
-  loadFromSku(): void {
+  loadSkuForm(): void {
     this.skuForm = this.formBuilder.group({
       byParams: new FormControl(`{"skuId":"${this.selectedSku.id
       }", "name":"${this.product.productName
@@ -85,7 +85,7 @@ export class ProductDetailsComponent implements OnInit {
         this.product = product;
         this.selectedSku = product.skus[0];
         this.selectedImageUrl = this.selectedSku.images[0].url;
-        this.loadFromSku();
+        this.loadSkuForm();
       });
   }
 
@@ -103,14 +103,23 @@ export class ProductDetailsComponent implements OnInit {
     this.selectedImageUrl = value;
   }
 
-  onQuantityChanged(event: any) {
-    if(event.target.value > this.selectedSku.available){
-      event.target.value = this.selectedSku.available;
+  onQuantityChanged() {
+    if(this.quantity > this.selectedSku.available){
+      this.quantity = this.selectedSku.available;
       this.quantity = this.selectedSku.available;
     }
-    this.loadFromSku();
+    this.loadSkuForm();
   }
 
+  onQuantityChangedUp(){
+    this.quantity +=1;
+    this.onQuantityChanged();
+  }
+
+  onQuantityChangedDown() {
+    this.quantity -=1;
+    this.onQuantityChanged();
+  }
   numberOnly(event: any){
     return numberOnly(event);
   }

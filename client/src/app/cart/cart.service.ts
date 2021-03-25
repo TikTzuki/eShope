@@ -112,9 +112,9 @@ export class CartService {
     return this.service.put(url, cart).pipe<boolean>(tap((response: any) => response));
   }
 
-  createOrder(cartCheckout, paymentMethod): Observable<IOrder> {
+  createOrder(cartCheckout, paymentMethod, address): Observable<IOrder> {
     const url = this.purchaseUrl + '/api/orders';
-    const order = this.mapCartInfoCheckout(cartCheckout, paymentMethod);
+    const order = this.mapCartInfoCheckout(cartCheckout, paymentMethod, address);
     return this.service.post(url, order).pipe<IOrder>(tap((res: any) => {
       return res;
     }));
@@ -164,12 +164,13 @@ export class CartService {
     ));
   }
 
-  mapCartInfoCheckout(cart: ICart, paymentMethod): IOrder{
+  mapCartInfoCheckout(cart: ICart, paymentMethod, address): IOrder{
     const order: IOrder = {
       customerId: cart.customerId,
       createDate: DateFormat.formatISO(new Date()),
       updateDate: DateFormat.formatISO(new Date()),
       shippingFee: cart.shippingFee,
+      shippingAddress: address,
       totalPrice: cart.shippingFee,
       status: 'pending',
       paymentMethod,

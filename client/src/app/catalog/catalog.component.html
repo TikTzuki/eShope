@@ -1,53 +1,58 @@
 <section class="esh-catalog">
-  <div class="container">
+    <div class="container">
 
-  </div>
-</section>
- <section class="esh-catalog-filters">
-  <div class="container">
-    <div class="alert alert-warning esh-catalog-alert" role="alert" [hidden]="!errorRecieved">
-      Error requesting
     </div>
-    <label data-title="brand" class="esh-catalog-label">
-      <select class="esh-catalog-filter" (change)="onBrandFilterChanged($event, $event.target.value)">
-        <option *ngFor="let brand of brands" [value]="brand.name">{{brand.name}}</option>
-      </select>
-    </label>
-    <label class="esh-catalog-label" data-title="category">
-      <select class="esh-catalog-filter" (change)="onCategoryFilterChanged($event, $event.target.value)">
-        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
-      </select>
-    </label>
-    <!-- <img src="/assets/images/arrow-right.svg" class="esh-catalog-send" (click)="onFilterApplied($event)"> -->
-    <a href="#">
-    <fa-icon icon="chevron-down" (click)="onFilterApplied($event)" ></fa-icon>
-    </a>
-  </div>
+</section>
+<section class="esh-catalog-filters">
+    <div class="alert alert-warning esh-catalog-alert" role="alert" [hidden]="!errorRecieved">
+        Error requesting
+    </div>
+    <div class="filter-row">
+
+        <label data-title="brand" class="esh-catalog-label">
+            <select class="esh-catalog-filter" (change)="onBrandFilterChanged($event, $event.target.value)">
+                <option *ngFor="let brand of brands" [value]="brand.name">{{brand.name}}</option>
+            </select>
+        </label>
+    </div>
+    <div class="filter-row">
+
+        <label class="esh-catalog-label" data-title="category">
+            <select class="esh-catalog-filter" (change)="onCategoryFilterChanged($event, $event.target.value)">
+                <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+            </select>
+        </label>
+    </div>
+    <div class="filter-row">
+        <a href="#">
+            <i class="fas fa-filter" (click)="onFilterApplied($event)"></i>
+        </a>
+    </div>
 </section>
 
 <div class="container">
-  <div *ngIf="catalog?.data.length > 0">
-    <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
-
-    <div class="esh-catalog-items row">
-        <div class="esh-catalog-item col-md-4" *ngFor="let product of catalog?.data">
-      <a routerLink="/products/{{product.id}}">
-          <img src="{{product.skus[0].images[0].url}}" class="esh-catalog-thumnail" />
-          <!-- <button [ngClass]="{'esh-catalog-button': true, 'is-disabled': !authenticated}" >
+    <div *ngIf="catalog?.data.length > 0">
+        <div class="esh-catalog-items row">
+            <div class="esh-catalog-item col-md-3" *ngFor="let product of catalog?.data">
+                <div class="product-card">
+                    <a routerLink="/products/{{product.id}}">
+                        <img src="{{product.skus[0].images[0].url}}" class="esh-catalog-thumnail" />
+                        <!-- <button [ngClass]="{'esh-catalog-button': true, 'is-disabled': !authenticated}" >
                 [ADD TO CART]
               </button> -->
-          <div class="esh-catalog-name">
-            <span>{{product.productName}}</span>
-          </div>
-          <div class="esh-catalog-price">
-            <span>{{product.skus[0].price | number:'.2-2'}}</span>
-          </div>
-      </a>
+                        <div class="esh-catalog-name">
+                            <span>{{product.productName}}</span>
+                        </div>
+                        <div class="esh-catalog-price">
+                            <span>{{product.skus[0].price}} ₫</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
+        <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
     </div>
-  <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
-  </div>
-  <div *ngIf="catalog?.data.length == 0">
-    <span>THERE ARE NO RESULTS THAT MATCH YOUR SEARCH</span>
-  </div>
+    <div *ngIf="catalog?.data.length == 0">
+        <span>THERE ARE NO RESULTS THAT MATCH YOUR SEARCH</span>
+    </div>
 </div>

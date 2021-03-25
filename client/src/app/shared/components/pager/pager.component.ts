@@ -6,11 +6,12 @@ import { IPager } from '../../models/pager.model';
 @Component({
   selector: 'app-pager',
   templateUrl: './pager.component.html',
-  styleUrls: ['./pager.component.css']
+  styleUrls: ['./pager.component.scss']
 })
 export class Pager implements OnInit, OnChanges {
   @Output() changed: EventEmitter<number> = new EventEmitter<number>();
   @Input() model!: IPager;
+  pageNumber: number[] = [];
   buttonStates: any = {
     nextDisabled: true,
     previousDisabled: true,
@@ -23,9 +24,15 @@ export class Pager implements OnInit, OnChanges {
 
   ngOnChanges(){
     if(this.model){
+      console.log(this.model);
+      
       this.model.items = (this.model.itemsPage > this.model.totalItems) ? this.model.totalItems : this.model.itemsPage;
       this.buttonStates.previousDisabled = (this.model.actualPage == 0);
       this.buttonStates.nextDisabled = (this.model.actualPage + 1 >= this.model.totalPages);
+      for(let i=0; i<this.model.totalPages; i++){
+        if ((i => this.model.actualPage - 1 && i <= this.model.actualPage) || (i <= this.model.actualPage + 1 && i >= this.model.actualPage))
+          this.pageNumber.push(i);
+      }
     }
   }
 

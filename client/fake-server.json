@@ -24,7 +24,7 @@
             "width": 43,
             "length": 43,
             "weight": 32,
-            "price": 34,
+            "price": 54000000,
             "images": [
               {
                 "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -62,7 +62,7 @@
             "width": 43,
             "length": 43,
             "weight": 32,
-            "price": 34,
+            "price": 38000,
             "images": [
               {
                 "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -100,7 +100,7 @@
             "width": 43,
             "length": 43,
             "weight": 32,
-            "price": 34,
+            "price": 64000,
             "images": [
               {
                 "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -138,7 +138,7 @@
             "width": 43,
             "length": 43,
             "weight": 32,
-            "price": 34,
+            "price": 54000,
             "images": [
               {
                 "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -211,7 +211,7 @@
       "width": 43,
       "length": 43,
       "weight": 32,
-      "price": 34,
+      "price": 54000,
       "quantity": 0,
       "images": [
         {
@@ -239,7 +239,7 @@
       "width": 43,
       "length": 43,
       "weight": 32,
-      "price": 34,
+      "price": 54000,
       "images": [
         {
           "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
@@ -266,7 +266,7 @@
       "width": 43,
       "length": 43,
       "weight": 32,
-      "price": 34,
+      "price": 54000,
       "images": [
         {
           "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -293,7 +293,7 @@
       "width": 43,
       "length": 43,
       "weight": 32,
-      "price": 34,
+      "price": 54000,
       "images": [
         {
           "url": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
@@ -320,7 +320,7 @@
       "width": 43,
       "length": 43,
       "weight": 32,
-      "price": 34,
+      "price": 54000,
       "images": [
         {
           "url": "https://vn-live.slatic.net/p/438979efdca1f530f288e582dd32ddce.png",
@@ -367,6 +367,29 @@
           "quantity": "2",
           "sku_id": "3",
           "variation": "red 45"
+        }
+      ]
+    },
+    {
+      "customerId": 1,
+      "createDate": "2021-03-21",
+      "updateDate": "2021-03-21",
+      "shippingFee": 1400,
+      "shippingAddress": "23 Nguyen van troi, Sai gon, q3, p2",
+      "totalPrice": 1400,
+      "status": "pending",
+      "paymentMethod": "COD",
+      "id": 2,
+      "orderItems": [
+        {
+          "id": null,
+          "image": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png",
+          "itemPrice": "34",
+          "name": "product nameeee",
+          "order_id": null,
+          "quantity": "1",
+          "sku_id": "2",
+          "variation": "black 40"
         }
       ]
     }
@@ -428,7 +451,16 @@
     {
       "customerId": 1,
       "id": 1,
-      "items": [],
+      "items": [
+        {
+          "skuId": "2",
+          "name": "product nameeee",
+          "variation": "black 40",
+          "itemPrice": "54000",
+          "quantity": "1",
+          "image": "https://vn-live.slatic.net/p/0fad617e7eb94cff7caafa92376a6a4a.png"
+        }
+      ],
       "shippingFee": 0,
       "totalPrice": 0
     }

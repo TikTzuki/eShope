@@ -18,10 +18,14 @@ import { LoginComponent } from './login/login.component';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { RegisterComponent } from './register/register.component';
+import { LoginModule } from './login/login.module';
+import { RegisterModule } from './register/register.module';
+import { AccountComponent } from './account/account.component';
+import { AccountModule } from './account/account.module';
 @NgModule({
   declarations: [
-    AppComponent,
-      LoginComponent
+    AppComponent
    ],
   imports: [
     BrowserAnimationsModule,
@@ -36,7 +40,10 @@ import { library } from '@fortawesome/fontawesome-svg-core';
     SlickCarouselModule,
     CatalogModule,
     ProductDetailsModule,
-    CartModule
+    CartModule,
+    LoginModule,
+    RegisterModule,
+    AccountModule
   ],
   providers: [],
   bootstrap: [AppComponent]

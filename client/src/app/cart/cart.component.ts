@@ -150,7 +150,9 @@ export class CartComponent implements OnInit {
   }
 
   checkOut() {
-    let isSuccessed = this.service.createOrder(this.cart, this.selectedPayment.value);
+    let addressObj:IAddress = JSON.parse(this.addressJsonString);
+    let address = `${addressObj.street}, ${addressObj.address1}, ${addressObj.address2}, ${addressObj.address3}`;
+    let isSuccessed = this.service.createOrder(this.cart, this.selectedPayment.value, address);
     isSuccessed.subscribe({
       next: res => { },
       complete: () => {
@@ -172,6 +174,8 @@ export class CartComponent implements OnInit {
       this.shippingFee += this.shippingAddress.id * 1400;
   });
     this.totalPrice = this.provisional + this.shippingFee;
+    this.cart.shippingFee = this.shippingFee;
+    this.cart.totalPrice = this.totalPrice
   }
 
 stringify(str: any): string {
@@ -199,6 +203,7 @@ changePaymentMethod() {
     modelPayment.componentInstance.model = this.paymentList;
     modelPayment.result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+      console.log(result);
       this.selectedPayment = JSON.parse(result);
     }, (reason) => {
       this.closeResult = `Dismissed ${(reason)}`;

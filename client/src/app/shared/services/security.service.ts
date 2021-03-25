@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaderResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { encode } from 'node:punycode';
+import jwtDecode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -85,7 +86,6 @@ export class SecurityService {
 
   public Authorize() {
     this.ResetAuthorizationData();
-
     let authorizationUrl = this.authorityUrl + '/connect/authorize';
     let client_id = 'js';
     let redirect_uri = location.origin + '/';

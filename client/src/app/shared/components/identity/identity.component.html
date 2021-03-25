@@ -1,24 +1,42 @@
-<div class="esh_identity">
-    <section class="esh_identity-section" *ngIf="!authenticated">
-        <div class="esh-identity-item" (click)="login()">
-            <div class="esh-identity-name esh-identity--upper">Login</div>
+<div class="esh-identity">
+    <div *ngIf="authenticated" class="esh-identity-unauthenticate">
+        <div class="identity-content-block">
+            <a routerLink="/sign-up">
+                Sign-up <i class="fas fa-user"></i>
+            </a>
         </div>
+        <div class="identity-content-block">
+            <a routerLink="/sign-in">
+                 Sign-in <i class="fas fa-sign-in-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <section class="esh-identity-section identity-content-block" *ngIf="authenticated">
+        <a [routerLink]="'account'" style="display: flex;">
+            <div class="esh-identity-name">Hello, {{userName}}</div>
+            <p>
+                <i class="fas fa-user"></i>
+            </p>
+        </a>
+
     </section>
 
-    <section class="esh-identity-section" *ngIf="authenticated">
-        <div class="esh-identity-name">{{userName}}</div>
-        <img class="esh-identity-image" src="assets/images/arrow-down.png">
-    </section>
-
-    <section class="esh-identity-drop" *ngIf="authenticated">
-        <div class="esh-identity-item" [routerLink]="['orders']">
+    <section class="esh-identity-drop identity-content-block" [routerLink]="['orders']" *ngIf="authenticated">
+        <a [routerLink]="['orders']" style="display: flex;">
             <div class="esh-identity-name esh-identity-name--upper">My orders</div>
-            <img src="assets/images/my_orders.png" alt="" class="esh-identity-image">
-        </div>
+            <p>
+                <i class="fas fa-bars"></i>
+            </p>
+        </a>
+    </section>
 
-        <div class="esh-identity-item" (click)="logoutClicked($event)">
+    <section class="identity-content-block">
+        <div class="esh-identity-item identity-content-block" (click)="logoutClicked($event)">
             <div class="esh-identity-name esh-identity-name--upper">Log out</div>
-            <img src="assets/images/logout.png" alt="" class="esh-identity-image">
+            <p>
+                <i class="fas fa-sign-out-alt"></i>
+            </p>
         </div>
     </section>
 </div>

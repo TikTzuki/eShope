@@ -1,0 +1,107 @@
+<div class="address-modify row" [ngClass]="{'hidden':selectedAddress==null}">
+    <div class="col-6">
+
+    </div>
+    <div class="col-6">
+        <div class="input-address">
+            <label>
+                Street
+            </label>
+            <input type="text" [ngModel]="selectedAddress?.street" name="street" id="street">
+        </div>
+        <div class="input-address">
+            <label>
+               City/Province 
+            </label>
+            <input type="text" [ngModel]="selectedAddress?.address1" name="address1" id="address1">
+            <select name="address1" id="address1" (change)="changeCurrentAddress($event)">
+                <option *ngFor="let address1 of addressList" [value]="address1.name">
+                </option>
+            </select>
+        </div>
+        <div class="input-address">
+            <label>
+               District/Town 
+            </label>
+            <input type="text" [ngModel]="selectedAddress?.address2" name="address2" id="address2">
+        </div>
+        <div class="input-address">
+            <label>
+                Sub-district/Village
+            </label>
+            <select name="address3" [ngModel]="selectedAddress?.address3" id="address3">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="address-book">
+    <div class="table">
+        <div class="table-header">
+            <table>
+                <tbody>
+                    <tr>
+                        <th rowspan="1" class="table-header-node first">
+                            <div class="table-cell-wrapper">
+                                Name
+                            </div>
+                        </th>
+                        <th rowspan="1" class="table-header-node ">
+                            <div class="table-cell-wrapper">
+                                Address
+                            </div>
+                        </th>
+                        <th rowspan="1" class="table-header-node ">
+                            <div class="table-cell-wrapper">
+                                Postcode
+                            </div>
+                        </th>
+                        <th rowspan="1" class="table-header-node ">
+                            <div class="table-cell-wrapper">
+                                Phone Number
+                            </div>
+                        </th>
+                        <th rowspan="1" class="table-header-node last">
+                            <div class="table-cell-wrapper">
+                                Action
+                            </div>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-body">
+            <table>
+                <tbody>
+                    <tr class="table-row" *ngFor="let item of customer?.address">
+                        <td class="table-cell">
+                            <div class="table-cell-wrapper">
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div class="table-cell-wrapper">
+                                {{item.street + ' ' + item.address3 + ' ' + item.address2 + ' ' + item.address1}}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div class="table-cell-wrapper">
+                                {{item.address1 + ' ' + item.address2 + ' ' + item.address3}}
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div class="table-cell-wrapper">
+
+                            </div>
+                        </td>
+                        <td class="table-cell">
+                            <div class="table-cell-wrapper">
+                                <button class="btn btn-secondary btn-sm modify-address" (click)="modifyAddress(item.id)">Update</button>
+                                <button class="btn btn-danger btn-sm" (click)="deleteAddress(item.id)">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

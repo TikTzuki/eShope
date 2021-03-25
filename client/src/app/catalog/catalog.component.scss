@@ -1,0 +1,28 @@
+@import '../variable';
+.esh-catalog-filters {
+    display: flex;
+}
+
+.filter-row {
+    padding-left: 10px;
+}
+
+.product-card {
+    box-shadow: 1px 1px 3px $color-background-dark;
+    padding-bottom: 2rem;
+}
+
+.esh-catalog-name {
+    color: $color-foreground-darker;
+    font-weight: 600;
+    padding-top: .4rem;
+    padding-left: 1rem;
+}
+
+.esh-catalog-price {
+    padding-top: .2rem;
+    color: $color-primary-dark;
+    font-size: 18px;
+    line-height: 22px;
+    padding-left: 1rem;
+}

@@ -1,25 +1,22 @@
 @import '../variable';
-.gallery {
-    max-width: 338px;
-}
+.gallery {}
 
 .gallery-preview-panel {
-    border-bottom: 1px solid #eff0f5;
+    border-bottom: 1px solid $color-foreground-bright;
     box-sizing: border-box;
     margin-bottom: 9px;
     position: relative;
     cursor: zoom-in;
     margin: 0;
-    padding: 0;
+    padding: 10px 0px;
 }
 
 .gallery-preview-panel-content {
     position: relative;
     overflow: hidden;
     height: 330px;
-    width: 330px;
+    width: 100%;
     text-align: center;
-    margin: 8px 0 10px 8px;
 }
 
 .gallery-preview-panel-image {
@@ -32,8 +29,13 @@
 
 .next-slick {
     position: relative;
-    display: block;
+    display: flex;
     touch-action: pan-y;
+}
+
+.item-gallery-slider {
+    padding-top: 10px;
+    max-height: 4rem;
 }
 
 .next-slick-list {
@@ -69,6 +71,18 @@
     transition: all .3s cubic-bezier(.86, 0, .07, 1);
 }
 
+.next-slick-icon {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 5rem;
+}
+
+.next-slick-icon:hover {
+    background-color: $color-background-bright;
+}
+
 .next-slick-state-active {
     border: 1px solid $color-primary;
 }
@@ -91,22 +105,22 @@
     cursor: pointer;
 }
 
-.main-infomation-detail {
-    display: inline-block;
-    width: calc(100% - 338px);
-    vertical-align: top;
-}
-
+// .main-infomation-detail {
+//     display: inline-block;
+//     width: calc(100% - 338px);
+//     vertical-align: top;
+// }
 .product-detail {
     display: inline-block;
-    width: calc(100% - 330px);
+    width: 100%;
     vertical-align: top;
     padding: 0 20px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-.sku-selector {
+.product-info,
+.product-description {
     border-top: 1px solid #eff0f5;
     padding-top: 25px;
     padding-bottom: 0;
@@ -115,6 +129,16 @@
 
 .section-title {
     line-height: 18px;
+}
+
+.quantity-picker {
+    padding: 10px 0;
+    display: flex;
+}
+
+.input-stock {
+    width: 5rem;
+    // height: 1rem;
 }
 
 .sku-content-header {
@@ -168,3 +192,6 @@
     max-height: 100%;
     vertical-align: middle;
 }
+
+.next-number-pick-handler-down-inner,
+.next-number-pick-handler-up-inner {}

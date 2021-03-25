@@ -1,13 +1,30 @@
 @import 'variable';
 .esh-app-header {
-    background-color: $color-background-brighter;
+    background-color: $color-background-bright;
     filter: "progid: DXImageTransform.Microsoft.gradient(startColorstr='#003e52', endColorstr='#1a9cb7', GradientType=1)";
     width: 100%;
     // position: fixed;
     z-index: 300;
 }
 
+.brand {
+    max-width: 200px;
+}
+
+.identity-container {
+    flex-direction: row-reverse;
+    display: flex;
+}
+
+.content-background {
+    background-color: $color-background-dark;
+}
+
 .main-content {
-    background-color: $color-background-bright;
+    background-color: $color-background-brighter;
     padding: 15px 0;
+}
+
+.esh-app-footer {
+    background-color: $color-background-bright;
 }

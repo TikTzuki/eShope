@@ -1,3 +1,14 @@
-<p>
-  login works!
-</p>
+<div class="login-background">
+    <div class="login-form">
+        <h1>Login</h1>
+        <div class="form-input-material">
+            <input [ngModel]="username" type="text" name="username" id="username" placeholder=" " autocomplete="off" required class="form-control-material" />
+            <label for="username">Email</label>
+        </div>
+        <div class="form-input-material">
+            <input [ngModel]="password" type="password" name="password" id="password" placeholder=" " autocomplete="off" required class="form-control-material" />
+            <label for="password">Password</label>
+        </div>
+        <button type="button" (click)="login()" class="btn btn-ghost">Login</button>
+    </div>
+</div>

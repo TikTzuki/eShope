@@ -7,6 +7,7 @@ export interface IOrder {
   updateDate: string;
   paymentMethod: string;
   shippingFee: number;
+  shippingAddress: string;
   totalPrice: number;
   status: string;
   orderItems: IOrderItem[];

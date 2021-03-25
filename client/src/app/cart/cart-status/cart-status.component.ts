@@ -9,7 +9,7 @@ import { ignoreElements } from 'rxjs/operators';
 @Component({
   selector: 'app-cart-status',
   templateUrl: './cart-status.component.html',
-  styleUrls: ['./cart-status.component.css']
+  styleUrls: ['./cart-status.component.scss']
 })
 export class CartStatusComponent implements OnInit {
   cartItemAddedSubscription: Subscription;
