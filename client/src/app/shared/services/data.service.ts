@@ -44,7 +44,7 @@ export class DataService {
   private doPost(url: string, data: any, needId: boolean, params?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options, needId);
-
+    console.log(data, url);
     return this.http.post(url, data, options)
       .pipe(
         tap((res: Response) => {
@@ -57,7 +57,7 @@ export class DataService {
   private doPut(url: string, data: any, needId: boolean, param?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options, needId);
-    console.log('do put', data);
+    console.log('do put', url ,data);
     return this.http.put(url, data, options)
       .pipe(
         tap((res: Response) => {

@@ -1,7 +1,6 @@
 import { Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { SecurityService } from '../../services/security.service';
-import { SignalrService } from '../../services/signalr.service';
 
 @Component({
   selector: 'app-identity',
@@ -13,7 +12,9 @@ export class Identity implements OnInit {
   private subscription!: Subscription;
   private userNane: string = '';
 
-  constructor(private service: SecurityService, private signalrService: SignalrService) { }
+  constructor(private service: SecurityService,
+    //  private signalrService: SignalrService
+     ) { }
 
   ngOnInit(): void {
     this.subscription = this.service.authenticationChallenge$.subscribe(res => {
@@ -48,7 +49,7 @@ export class Identity implements OnInit {
   }
 
   logout(): void{
-    this.signalrService.stop();
+    // this.signalrService.stop();
     this.service.Logoff();
   }
 }

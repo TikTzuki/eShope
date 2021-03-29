@@ -151,7 +151,7 @@ export class CartService {
   }
 
   getAddress(): Observable<IAddress[]>{
-    const url = this.purchaseUrl + '/customer/address?customerId=' + this.cart.customerId;
+    const url = this.purchaseUrl + '/address?customerId=' + this.cart.customerId;
     return this.service.get(url).pipe<IAddress[]>(tap(
       {
         next: (res: any) => {

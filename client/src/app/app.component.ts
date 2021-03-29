@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { SecurityService } from './shared/services/security.service';
 import { Configuration } from 'tslint';
 import { ConfigurationService } from './shared/services/configuration.service';
-import { SignalrService } from './shared/services/signalr.service';
 import { ToastrService } from 'ngx-toastr';
 import { Title } from '@angular/platform-browser';
 
@@ -20,7 +19,7 @@ export class AppComponent {
    private titleService: Title,
    private securityService: SecurityService,
    private configurationService: ConfigurationService,
-   private signalrService: SignalrService,
+  //  private signalrService: SignalrService,
    private toastr: ToastrService,
    vcr: ViewContainerRef
  ) {

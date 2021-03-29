@@ -1,4 +1,8 @@
 @import '../variable';
+.hidden {
+    display: none;
+}
+
 .list-header {
     display: flex;
     align-items: center;

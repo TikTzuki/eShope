@@ -6,35 +6,51 @@ import { tap } from 'rxjs/operators';
 import { IAddress, ICustomer } from '../shared/models/customer.model';
 import { Observable } from 'rxjs';
 import { IAddressJson1 } from '../shared/models/addressJson.model';
+import { IOrder } from '../shared/models/order.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
   accountUrl:string;
-
+  purchaseUrl:string;
+  addressUrl: string;
+  orderUrl: string;
   constructor(
     private service: DataService,
     private configurationService: ConfigurationService,
     private sercurityService: SecurityService
   ) {
    if(this.configurationService.isReady){
-    this.accountUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customers'
+    this.accountUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customers';
+    this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
+    this.addressUrl = this.configurationService.serverSettings.purchaseUrl + '/api/address';
+    this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
    } else {
      this.configurationService.settingLoaded$.subscribe({
        next: res =>{
          this.accountUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customers';
+         this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
+         this.addressUrl = this.configurationService.serverSettings.purchaseUrl + '/api/address'
+         this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
        }
      })
    }
   }
 
-  userInfo(){
-    let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
-    console.log(url);
-    return this.service.get(url).pipe<ICustomer>(tap((res: any)=>{
+  // userInfo():Observable<ICustomer>{
+  //   let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
+  //   console.log(url);
+  //   return this.service.get(url).pipe<ICustomer>(tap((res: any)=>{
+  //     return res;
+  //   }))
+  // }
+
+  getAddress():Observable<IAddress[]>{
+    let url = this.addressUrl + '?customerId=' + this.sercurityService.UserData.id;
+    return this.service.get(url).pipe<IAddress[]>(tap((res: any) => {
       return res;
-    }))
+    }));
   }
 
   getAddressList(){
@@ -43,4 +59,75 @@ export class AccountService {
       return res.data;
     }))
   }
+
+  // updateUser(user: ICustomer){
+  //   let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
+  //   return this.service.put(url, user).pipe<any>(tap((res:any)=>{
+  //     console.log("hihi");
+  //     return res;
+  //   }))
+  // }
+
+  createAddress(address: IAddress){
+    let url = this.addressUrl;
+    return this.service.post(url, address).pipe<boolean>(tap((res: any)=>{
+      console.log(res);
+      return res;
+    }));
+  }
+
+  updateAddress(address: IAddress):Observable<boolean> {
+    let url = this.purchaseUrl + '/address/' + address.id;
+    return this.service.put(url, address).pipe<boolean>(tap((res: any) => {
+      return res;
+    }));
+  }
+
+  deleteAddress(id):Observable<boolean>{
+    let url  = this.addressUrl +'/'+ id;
+    this.service.delete(url);
+    return new Observable();
+  }
+
+  getProfile():Observable<ICustomer>{
+    let url = this.accountUrl+ '/' + this.sercurityService.UserData.id;
+    return this.service.get(url).pipe<ICustomer>(tap((res: any) => {
+      return res;
+    }))
+  }
+
+  updatePassword(oldPwd, newPwd) {
+    let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
+    let requestChangePwd = {
+      oldPwd,
+      newPwd
+    }
+    //TODO: change password
+    // return this.service.put(url, requestChangePwd).pipe<any>(tap((Res: any) => {
+    // }));
+  }
+
+  updateProfile(profile:ICustomer){
+    let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
+    return this.service.put(url, profile).pipe<any>(tap((res:any)=>{
+      return res;
+    }));
+  }
+
+  getOrders(status?:string):Observable<IOrder[]>{
+    let url = this.orderUrl + '?cutsomerId=' + this.sercurityService.UserData.id 
+      + (status !== undefined ? '&status=' + status : '');
+      console.log(url);
+    return this.service.get(url, null).pipe<IOrder[]>(tap((res:any)=>{
+      return res;
+    }))
+  }
+
+  updateOrder(order: IOrder){
+    let url = this.orderUrl + '/' + order.id;
+    return this.service.put(url, order).pipe<any>(tap((res:any)=>{
+      return res;
+    }));
+  }
+  
 }

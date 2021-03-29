@@ -235,6 +235,7 @@ export class SecurityService {
   }
 
   private setHeaders():any {
+    console.log("set header");
     const httpOptions = {
       headers: new HttpHeaders()
     }

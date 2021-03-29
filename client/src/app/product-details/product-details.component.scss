@@ -105,11 +105,6 @@
     cursor: pointer;
 }
 
-// .main-infomation-detail {
-//     display: inline-block;
-//     width: calc(100% - 338px);
-//     vertical-align: top;
-// }
 .product-detail {
     display: inline-block;
     width: 100%;
@@ -131,8 +126,15 @@
     line-height: 18px;
 }
 
-.quantity-picker {
+.sku-price {
+    color: $color-primary;
+}
+
+.module-quantity-input {
     padding: 10px 0;
+}
+
+.quantity-picker {
     display: flex;
 }
 

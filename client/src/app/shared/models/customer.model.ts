@@ -14,6 +14,7 @@ export interface ICustomer{
 
 export interface IAddress{
   id: number;
+  customerId: number;
   street: string;
   address1: string;
   address2: string;

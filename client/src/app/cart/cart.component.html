@@ -1,4 +1,8 @@
-<div class="cart row">
+<div [ngClass]="{'hidden': !(cart?.items.length === 0)}" class="contatiner" style="height: 500px;">
+    <H4> You dont have any item in cart</H4>
+</div>
+<div class="cart row" [ngClass]="{'hidden':cart?.items.length === 0}">
+
     <!-- <app-header routerLink="/catalog">Back to catalog</app-header> -->
     <div class="col-8">
         <div *ngFor="let errorMessage of errorMessages">
@@ -44,7 +48,7 @@
                         <a href="#" class="automation-link-from-sub-title-to-prod sku"> {{item.name}}</a>
                     </section>
                     <section class="cart-item cart-item--middle col-2">
-                        <p class="current-price">{{item.itemPrice}} đ</p>
+                        <p class="current-price">{{item.itemPrice | number}} đ</p>
                         <div class="operations" (click)="removeCartItem($event, item)">
                             <fa-icon icon="trash" class="delete"></fa-icon>
                         </div>
@@ -68,7 +72,7 @@
                     </section>
                     <section class="cart-item cart-item--middle cart-item--mark col-2">
                         <p class="sub-price">
-                            {{(item.itemPrice * item.quantity) | number:'.1-1'}}
+                            {{(item.itemPrice * item.quantity) | number}}
                         </p>
                     </section>
                 </div>
@@ -116,7 +120,7 @@
                             Provisional ({{cart?.items.length }} item)
                         </div>
                         <div class="checkout-summary-value">
-                            <span class="checkout-summary-noline-value">{{provisional}} ₫</span>
+                            <span class="checkout-summary-noline-value">{{provisional | number}} ₫</span>
                         </div>
                     </div>
                     <div class="checkout-summary-row">
@@ -124,7 +128,7 @@
                             Shipping Fee
                         </div>
                         <div class="checkout-summary-value">
-                            <span class="checkout-summary-noline-value">{{shippingFee}} ₫</span>
+                            <span class="checkout-summary-noline-value">{{shippingFee | number}} ₫</span>
                         </div>
                     </div>
                     <div class="checkout-summary-row">
@@ -147,7 +151,7 @@
                     <div class="checkout-order-total-row">
                         <div class="checkout-order-total-title"> Total </div>
                         <div class="checkout-order-total-fee">
-                            {{totalPrice | number:'.2-2'}} ₫
+                            {{totalPrice | number}} ₫
                         </div>
                     </div>
                 </div>

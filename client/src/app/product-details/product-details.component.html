@@ -18,33 +18,19 @@
                 <div class="next-slick-icon" (click)="slickModal.slickGoTo(3)">
                     <fa-icon icon="chevron-right"></fa-icon>
                 </div>
-
-                <!-- <div class="next-slick-inner">
-        <div class="next-slick-list">
-          <div class="next-slick-track">
-            <div class="next-slick-slide" *ngFor="let image of selectedSku.images"
-              [ngClass]="{'next-slick-state-active': image.url == selectedImageUrl}" (click)="onImageSelected($event, image.url)">
-              <img [src]="image.url" class="item-galley-thumbnail-image">
-            </div>
-          </div>
-        </div>
-        <div 
-        class="next-slick-arrow next-slick-prev"
-        style="display: block;">
-          <fa-icon icon="chevron-right"></fa-icon>
-        </div>
-        <div class="next-slick-arrow next-slick-next" style="display: block;">
-          <fa-icon icon="chevron-left"></fa-icon>
-        </div>
-      </div> -->
             </div>
         </div>
         <!-- Product detail -->
         <div class="product-detail col-md-8 col-sm-12">
             <h1>{{product.productName}}</h1>
-            <p> Thuong hieu: {{product.brandId}}</p>
+            <p> Brand: {{product.brandId}}</p>
             <div class="row">
                 <div class="product-info col-md-6 col-sm-12">
+                    <div class="module-price">
+                        <span class="sku-price">
+                        <h3>{{selectedSku.price | number}}</h3>
+                        </span>
+                    </div>
                     <div class="module-sku-select">
                         <div id="module_sku_select" class="pdp-block module">
                             <div class="sku-selector">
@@ -65,8 +51,8 @@
                         </div>
                     </div>
                     <div class="module-quantity-input">
-                        <h6 class="section-title">In Stock</h6>
                         <div class="section-content">
+                            <label class="section-title">In Stock</label>
                             <div class="quantity-picker">
                                 <span>
                                 <a class="next-number-picker-handler next-number-picker-handler-up">
@@ -84,13 +70,13 @@
                                 </a>
                                 </span>
                             </div>
-                            <span *ngIf="(selectedSku.available <= 0)" class="quantity-cotent-warning">Het hang</span>
+                            <span *ngIf="(selectedSku.available <= 0)" class="quantity-cotent-warning">Sold out</span>
                         </div>
                     </div>
                     <div class="module-add-to-cart">
                         <button [disabled]="!(quantity > 0)" class="btn btn-success add-to-cart" (click)="addToCart($event)">
                             <span>
-                                Them vao gio hang
+                               Add to cart 
                             </span>
                         </button>
                         <form [formGroup]="skuForm" name="skuForm" action method="post">

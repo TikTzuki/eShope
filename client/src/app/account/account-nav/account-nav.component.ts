@@ -19,7 +19,7 @@ export class AccountNavComponent implements OnInit {
     {name: 'Profile', link: 'profile'},
     {name: 'Orders', link:'orders'}
   ];
-  selectedLink = this.navList[0].link;
+  selectedLink = null;
   constructor() {
 
   }

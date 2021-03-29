@@ -8,7 +8,6 @@ import { DataService } from './services/data.service';
 import { SecurityService } from './services/security.service';
 import { ConfigurationService } from './services/configuration.service';
 import { StorageService } from './services/storage.service';
-import { SignalrService } from './services/signalr.service';
 import { Pager } from './components/pager/pager.component';
 import { CartWrapperService } from './services/cart.wrapper.service';
 import { ModalComponent } from './components/modal/modal.component';

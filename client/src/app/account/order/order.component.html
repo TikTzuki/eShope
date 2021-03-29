@@ -1,3 +1,81 @@
-<p>
-  order works!
-</p>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab(1)" [ngClass]="{'active':selectedTab===1}" aria-current="page">All</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab(2)" [ngClass]="{'active':selectedTab===2}">Pending</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab(3)" [ngClass]="{'active':selectedTab===3}" tabindex="-1" aria-disabled="true">Shipping</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab(4)" [ngClass]="{'active':selectedTab===4}" tabindex="-1" aria-disabled="true">Delivered</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab(5)" [ngClass]="{'active':selectedTab===5}" tabindex="-1" aria-disabled="true">Canceled</p>
+        </li>
+    </ul>
+    <div class="orders">
+        <div class="order" *ngFor="let order of orders">
+            <div class="order-info">
+                <div class="pull-left">
+                    <p class="info-order-left-text">
+                        Order #:
+                        <a class="link">
+                  {{order.id}}
+                </a>
+                    </p>
+                    <p class="text info desc">
+                        Create at: {{order.createDate}}
+                    </p>
+                </div>
+                <div class="pull-cont d-flex align-items-end justify-content-end">
+                    <button class="btn btn-secondary btn-sm" *ngIf="order.status==='pending'" (click)="openConfirmModal(content, order.id)">Cancel</button>
+                    <button class="btn btn-info btn-sm"> Detail</button>
+                </div>
+            </div>
+            <div class="row order-item" *ngFor="let orderItem of order.orderItems">
+                <div class="col-md-2 item-pic">
+                    <a href="#">
+                        <img src="{{orderItem.image}}">
+                    </a>
+                </div>
+                <div class="col-md-4 item-main item-main-mini">
+                    <div class="text title item-title">
+                        {{orderItem.name}}
+                    </div>
+                </div>
+                <div class="col-md-2 item-variation">
+                    <span class="text info">
+                    {{orderItem.variation}}
+                  </span>
+                </div>
+                <div class="col-md-1 item-quantity">
+                    <span>
+                <span class="text desc info multiply">Qty:</span>
+                    <span class="text"> {{orderItem.quantity}} </span>
+                    </span>
+                </div>
+                <div class="col-md-2 item-status item-capsule">
+                    <p class="capsule"> {{order.status}} </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="change-pwd">Cancel order</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <h3> Cancel your order? </h3>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close()">Save</button>
+    </div>
+</ng-template>
