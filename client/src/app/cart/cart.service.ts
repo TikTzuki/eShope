@@ -44,6 +44,7 @@ export class CartService {
   ) {
     console.log('security service is authorized ' + authService.IsAuthorized);
     if (this.authService.IsAuthorized) {
+      console.log('security service is authorized ' + authService.IsAuthorized);
       if(this.authService.UserData){
         // this.cart.customerId = this.authService.UserData.sub;
         this.cart.customerId = this.authService.UserData.id;
@@ -137,6 +138,7 @@ export class CartService {
 
   getCart(): Observable<ICart> {
     const url = this.cartUrl + '/' + this.cart.customerId;
+    console.log('get cart', url);
     return this.service.get(url).pipe<ICart>(tap(
       {
         next: (response: any) => {

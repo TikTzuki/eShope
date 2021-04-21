@@ -32,25 +32,23 @@ export class CatalogComponent implements OnInit {
   constructor(
     private service: CatalogService,
     private configurationService: ConfigurationService,
-    private securityService: SecurityService,
-    // private basketService: BasketWrapperService
   ) {
-    this.authenticated = securityService.IsAuthorized;
   }
 
   ngOnInit(): void {
 
     if (this.configurationService.isReady) {
+      console.log('config ready');
+      
       this.loadData();
     }
     else {
+      console.log('config not ready');
       this.configurationService.settingLoaded$.subscribe(x => {
+        console.log('load data');
         this.loadData();
       });
     }
-    this.authSubscription = this.securityService.authenticationChallenge$.subscribe(res => {
-      this.authenticated = res;
-    });
   }
 
   loadData(){

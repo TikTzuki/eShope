@@ -1,0 +1,32 @@
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab('account')" [ngClass]="{'active':selectedTab==='account'}" aria-current="page">Account</p>
+        </li>
+        <li class="nav-item">
+            <p class="nav-link" (click)="changeTab('address')" [ngClass]="{'active':selectedTab==='address'}" aria-current="page">Address</p>
+        </li>
+    </ul>
+    <div class="row">
+        <div class="col-12 account">
+            <div class="mb-3">
+                <span>Name</span>
+                <div>
+                    <span>{{user.name}}</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <span>Phone Number</span>
+                <div>
+                    <span>{{user.phoneNumber}}</span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <span>Email</span>
+                <div>
+                    <span>{{user.email}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

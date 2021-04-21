@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "C:\\Users\\VIVOBOOK\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\VIVOBOOK\\.nuget\\packages"
-    ]
-  }
-}

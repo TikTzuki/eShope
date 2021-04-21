@@ -1,0 +1,107 @@
+<div class="container">
+    <h2> Product manager </h2>
+    <div class="row">
+        <a class="btn btn-primary" routerLink="/product/:productId"> New Product </a>
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="nav-item" *ngFor="let keyNValue of Object.entries(EProductStatus)">
+            <p class="nav-link" (click)="changeTab(keyNValue[1])" [ngClass]="{'active':selectedTab===keyNValue[1]}" aria-current="page">{{keyNValue[0]}}</p>
+        </li>
+    </ul>
+    <div class="products table">
+        <table>
+            <thead class="table-header">
+                <tr>
+                    <th class="table-cell table-header-node">
+                        <div class="table-cell-wrapper">
+                            <p> Image </p>
+                        </div>
+                    </th>
+                    <th class="table-cell table-header-node">
+                        <div class="table-cell-wrapper">
+                            <p> Name </p>
+                        </div>
+                    </th>
+                    <th class="table-cell table-header-node">
+                        <div class="table-cell-wrapper">
+                            <p> Price </p>
+                        </div>
+                    </th>
+                    <th class="table-cell table-header-node">
+                        <div class="table-cell-wrapper">
+                            <p> Available </p>
+                        </div>
+                    </th>
+                    <th class="table-cell table-header-node">
+                        <div class="table-cell-wrapper">
+                            <p> Action </p>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                <tr class="table-row" *ngFor="let product of productList">
+                    <td class="table-cell table-cell-selection">
+                        <div class="table-cell-wrapper">
+                            <a class="product-desc-link-image">
+                                <img class="product-desc-image" [src]="product.skus[0]?.images[0]?.url | prependHost">
+                            </a>
+                        </div>
+                    </td>
+                    <td class="table-cell table-cell-selection">
+                        <div class="table-cell-wrapper">
+                            <p>
+                                {{product.productName}}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="table-cell table-cell-selection">
+                        <div class="table-cell-wrapper">
+                            <p *ngIf="product.minPrice!==product.maxPrice">
+                                {{product.minPrice | number}}-{{product.maxPrice | number}}
+                            </p>
+                            <p *ngIf="product.minPrice===product.maxPrice">
+                                {{product.minPrice | number}}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="table-cell table-cell-selection">
+                        <div class="table-cell-wrapper">
+                            <p>
+                                {{product.totalAvailable}}
+                            </p>
+                        </div>
+                    </td>
+                    <td class="table-cell table-cell-selection">
+                        <div class="table-cell-wrapper">
+                            <button class="btn btn-info btn-sm" routerLink="/product/{{product.id}}">
+                                Modify
+                            </button>
+                            <button class="btn btn-danger btn-sm" (click)="deleteProduct(content, product.id)">
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<ng-template #content let-modal>
+    <div class="modal-content modal-backdrop">
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Product update</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+        </div>
+        <div class="modal-body d-flex align-items-center justify-content-around">
+            <H3> Delete Product ? </H3>
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close('result')">Confirm</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</ng-template>

@@ -49,8 +49,8 @@ class stupid{
       s: [...Ss],
       OPEN: `OPEN = { ${this.OPEN.map(item => { return `S${item.identity}, ` })} }`,
       CLOSED: `CLOSE = { ${this.CLOSE.map(item => { return `S${item.identity}` })} }`,
-      finishString: `Thêm ${Ss.map(item => { return `S${item.identity}, ` })} vào tập OPEN, thêm S${initS.identity} vào CLOSED `,
-      initString: `Lấy S${initS.identity} ra khỏi OPEN`
+      finishString: `ThÃªm ${Ss.map(item => { return `S${item.identity}, ` })} vÃ o táº­p OPEN, thÃªm S${initS.identity} vÃ o CLOSED `,
+      initString: `Láº¥y S${initS.identity} ra khá»�i OPEN`
     }
     this.steps.push(stepForSave)
     let i = 30;
@@ -68,8 +68,8 @@ class stupid{
         s: [...smallest],
         OPEN: `OPEN = { ${this.OPEN.map(item =>{ return `S${item.identity} `})} }`,
         CLOSED: `CLOSE = { ${ this.CLOSE.map(item =>{ return `S${item.identity} `})} }`,
-        finishString: `Thêm ${smallest.map(item => { return `S${item.identity} ` })} vào tập OPEN, thêm S${s.identity} vào CLOSED `,
-        initString: `Lấy S${s.identity} ra khỏi OPEN`
+        finishString: `ThÃªm ${smallest.map(item => { return `S${item.identity} ` })} vÃ o táº­p OPEN, thÃªm S${s.identity} vÃ o CLOSED `,
+        initString: `Láº¥y S${s.identity} ra khá»�i OPEN`
       }
       this.steps.push(stepForSave);
       console.log(stepForSave);
@@ -94,6 +94,7 @@ class stupid{
     }
     return true;
   }
+
   compareF(a, b) {
     if (a.f > b.f)
       return 1;
@@ -397,8 +398,8 @@ class stupid{
                                 </tr>
                             </tbody>
                         </table>
-                        <h5 class="state"> Trạng thái S{{state.identity}} </h5>
-                        <span> Tính các giá trị của S{{state.identity}} </span>
+                        <h5 class="state"> Tráº¡ng thÃ¡i S{{state.identity}} </h5>
+                        <span> TÃ­nh cÃ¡c giÃ¡ trá»‹ cá»§a S{{state.identity}} </span>
                         <li> g(S{{state.identity}}) = {{state.g}}</li>
                         <li> h(S{{state.identity}}) = {{state.h}}</li>
                         <li> f(S{{state.identity}}) = {{state.f}}</li>

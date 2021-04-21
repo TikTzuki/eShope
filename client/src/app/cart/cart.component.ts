@@ -22,6 +22,8 @@ import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-
 import { resolve } from 'node:path';
 import { ModalComponent } from '../shared/components/modal/modal.component';
 import { Modal } from 'bootstrap';
+import { SecurityService } from '../shared/services/security.service';
+import { EPaymentMethod } from '../shared/models/paymentMethod.const';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -37,12 +39,12 @@ export class CartComponent implements OnInit {
   addressJsonString: string = '';
   addressList: IAddress[];
   paymentList: any[] = [
-    { name: 'Cash on delivery', icon: 'fas fa-money-bill-alt', value: 'COD' },
-    { name: 'Visa', icon: 'fab fa-cc-visa', value: 'VISA' },
-    { name: 'Credit card', icon: 'fas fa-credit-card', value: 'CREDIT' },
-    { name: 'Bitcoin', icon: 'fab fa-bitcoin', value: 'BITCOIN' },
-    { name: 'Paypal', icon: 'fab fa-cc-paypal', value: 'PAYPAL' },
-    { name: 'Mastercard', icon: 'fab fa-cc-mastercard', value: 'MASTERCARD' }
+    { name: 'Cash on delivery', icon: 'fas fa-money-bill-alt', value: EPaymentMethod.COD },
+    { name: 'Visa', icon: 'fab fa-cc-visa', value: EPaymentMethod.VISA },
+    { name: 'Credit card', icon: 'fas fa-credit-card', value: EPaymentMethod.CREDIT },
+    { name: 'Bitcoin', icon: 'fab fa-bitcoin', value: EPaymentMethod.BITCOIN },
+    { name: 'Paypal', icon: 'fab fa-cc-paypal', value: EPaymentMethod.PAYPAL },
+    { name: 'Mastercard', icon: 'fab fa-cc-mastercard', value: EPaymentMethod.MASTERCARD }
   ];
   selectedPayment = this.paymentList[0];
   closeResult = '';
@@ -52,9 +54,14 @@ export class CartComponent implements OnInit {
     private router: Router,
     private configurationService: ConfigurationService,
     private cartWrapper: CartWrapperService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private securityService: SecurityService
+    ) { }
 
   ngOnInit(): void {
+    if(!this.securityService.IsAuthorized){
+      this.securityService.GoToLoginPage();
+    }
     if (this.configurationService.isReady) {
       this.loadData();
     } else {

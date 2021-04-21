@@ -1,1 +1,0 @@
-[{"stmt":"CREATE TABLE customer (\nid INTEGER PRIMARY KEY,\nname TEXT,\nemail TEXT,\nphone_number TEXT,\ngender TEXT,\npassword TEXT,\naccess_token TEXT,\naccess_expries TEXT,\nrefresh_token TEXT,\nrefresh_expries TEXT\n);","header":[],"rows":[]}]

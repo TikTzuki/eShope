@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import './app/variable';
-@import "../node_modules//bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/functions";
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
 :root {
@@ -76,4 +76,9 @@ $theme-colors: ( "primary": $color-primary, "secondary": $color-secondary, "ligh
 //custom label
 label {
     margin: 0;
+}
+
+.alert-sm {
+    font-size: x-small;
+    color: $color-danger;
 }

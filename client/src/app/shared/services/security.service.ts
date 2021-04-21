@@ -8,6 +8,10 @@ import { HttpClient, HttpHeaderResponse, HttpHeaders } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { encode } from 'node:punycode';
 import jwtDecode from 'jwt-decode';
+import { DataService } from './data.service';
+import { IAuthorizeRequest } from '../models/authorizeRequest.model';
+import { tap } from 'rxjs/operators';
+import { RSA_NO_PADDING } from 'node:constants';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +19,19 @@ import jwtDecode from 'jwt-decode';
 export class SecurityService {
   private actionUrl!: string;
   private headers: HttpHeaders;
-  private storage: StorageService;
   private authenticationSource = new Subject<boolean>();
   authenticationChallenge$ = this.authenticationSource.asObservable();
-  private authorityUrl = '';
+  private identityUrl = '';
+  private storage;
 
   public UserData: any;
   public IsAuthorized!: boolean;
   constructor(
-    private _http: HttpClient, 
+    private _http: HttpClient,
     private _router: Router,
     private route: ActivatedRoute,
-    private _configurationService: ConfigurationService,
-    private _storageService: StorageService
+    private configurationService: ConfigurationService,
+    private _storageService: StorageService,
   ) {
     console.log('constructor');
     this.headers = new HttpHeaders();
@@ -35,146 +39,71 @@ export class SecurityService {
     this.headers.append('Accept', 'application/json');
     this.storage = _storageService;
 
-    this._configurationService.settingLoaded$.subscribe(x => {
-      this.authorityUrl = this._configurationService.serverSettings.identityUrl;
-      this.storage.store('IdentityUrl', this.authorityUrl);
+    this.configurationService.settingLoaded$.subscribe(x => {
+      this.identityUrl = this.configurationService.serverSettings.identityUrl;
+      this.storage.store('IdentityUrl', this.identityUrl);
     });
-    if (this.storage.retrieve('IsAuthorized') !== '') {
-      this.IsAuthorized = this.storage.retrieve('IsAuthorized');
-      this.authenticationSource.next(true);
+
+    if (this.storage.retrieve('isAuthorized') !== '') {
+      this.IsAuthorized = this.storage.retrieve('isAuthorized');
       this.UserData = this.storage.retrieve('userData');
+      this.authenticationSource.next(true);
+      console.log(this.UserData);
     }
   }
 
-  public GetToken(): any {
-    return this.storage.retrieve('authorizationData');
+  public GoToLoginPage(){
+    this._router.navigate(['/sign-in']);
   }
 
-  public ResetAuthorizationData() {
-    this.storage.store('authorizationData', '');
-    this.storage.store('authorizationDataIdToken', '');
-
-    this.IsAuthorized = false;
-    this.storage.store('IsAuthorized', false);
+  public Authorize(authorizedRequest: IAuthorizeRequest){
+    this.ResetAuthorizationData();
+    const url = this.identityUrl.endsWith('/') ? this.identityUrl : `${this.identityUrl}/api/authenticate/login`;
+    console.log(authorizedRequest, url);
+    this._http.post(url, JSON.stringify(authorizedRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
+      tap((res: any) => {
+        if (res.status >= 200 && res.status < 300) {
+          return res;
+        }
+        return false;
+      })
+    ).subscribe({
+      next: res => {
+        if(res){
+          this.SetAuthorizationData(res.token, res.refreshToken);
+        }
+      }
+    });
   }
 
   public SetAuthorizationData(token: any, idToken: any) {
-    if (this.storage.retrieve('authorizationData') !== '') {
-      this.storage.store('authorizationData', '');
-    }
-
-    this.storage.store('authorizationData', token);
-    this.storage.store('authorizationDataIdToken', idToken);
+    this.storage.store('accessToken', token);
+    this.storage.store('refreshToken', idToken);
     this.IsAuthorized = true;
-    this.storage.store('IsAuthorized', true);
+    this.storage.store('isAuthorized', true);
 
     // TODO: replace for get user data
-  this.UserData = this.storage.retrieve('userData');
-  //   this.getUserData()
-  //     .subscribe(data => {
-  //       this.UserData = data;
-  //       this.storage.store('userData', data);
-  //       //emit observable
-  //       this.authenticationSource.next(true);
-  //       window.location.href = location.origin;
-  //     },
-  //       error => this.HandleError(error),
-  //       () => {
-  //         console.log(this.UserData);
-  //       });
-  }
-
-  public Authorize() {
-    this.ResetAuthorizationData();
-    let authorizationUrl = this.authorityUrl + '/connect/authorize';
-    let client_id = 'js';
-    let redirect_uri = location.origin + '/';
-    let response_type = 'id_token token';
-    let scope = 'openid profile orders cart webshoppingagg orders.signalrhub';
-    let nonce = 'N' + Math.random() + '' + Date.now();
-    let state = Date.now() + '' + Math.random();
-
-    this.storage.store('authStateControl', state);
-    this.storage.store('authNonce', nonce);
-
-    let url =
-      authorizationUrl + '?' +
-      'response_type=' + encodeURI(response_type) + '&' +
-      'client_id=' + encodeURI(client_id) + '&' +
-      'redirect_uri=' + encodeURI(redirect_uri) + '&' +
-      'scope=' + encodeURI(scope) + '&' +
-      'nonce=' + encodeURI(nonce) + '&' +
-      'state=' + encodeURI(state);
-    console.log(url);
-    
-    window.location.href = url;
-  }
-
-  public AuthorizedCallBack() {
-    this.ResetAuthorizationData();
-
-    let hash = window.location.hash.substr(1);
-
-    /**
-     *  result = {
-     *  token: "tokenblabla",
-     *  id_token: "id_token.dataobjectEncoded",
-     *  state: "state df"
-     * }
-     */
-    let result: any = hash.split('&').reduce(function (result: any, item: string) {
-      let parts = item.split('=');
-      result[parts[0]] = parts[1];
-      return result;
-    }, {});
-
-    console.log(result);
-
-    let token = '';
-    let id_token = '';
-    let authResponseIsValid = false;
-
-    if (!result.error) {
-      // TODO: DO FOR AUTHORIZATION
-      // if (result.state !== this.storage.retrieve('authStateControl')) {
-      //   console.log('AuthorizedCallbacl incorrect state');
-      // } else {
-        token = result.access_token;
-        id_token = result.id_token;
-
-        // let dataIdToken: any = this.getDataFromToken(id_token);
-
-        // if (dataIdToken.nonce !== this.storage.retrieve('authNonce')) {
-        //   console.log('AuthorizedCallback incorrect nonce');
-        // } else {
-          this.storage.store('authNonce', '');
-          this.storage.store('authStateControl', '');
-
-          authResponseIsValid = true;
-          console.log("AuthorizedCallback")
-        // }
-      // }
-    }
-
-    if (authResponseIsValid) {
-      this.SetAuthorizationData(token, id_token);
-    }
+  // this.UserData = this.storage.retrieve('userData');
+    let tokenData:any = this.getDataFromToken(token);
+    this.getUserData()
+      .subscribe(data => {
+        this.UserData = data;
+        this.storage.store('userData', data);
+        //emit observable
+        this.authenticationSource.next(true);
+        window.location.href = location.origin;
+      },
+        error => this.HandleError(error),
+        () => {
+          console.log(this.UserData);
+        });
   }
 
   public Logoff() {
-    let authorizationUrl = this.authorityUrl + '/coonect/endssion';
-    let id_token_hint = this.storage.retrieve('authorizationDataIdToken');
-    let post_logout_redirect_uri = location.origin + '/';
-
-    let url =
-      authorizationUrl + '?' +
-      'id_token_hint=' + encodeURI(id_token_hint) + '&' +
-      'post_logout_redirect_uri=' + encodeURI(post_logout_redirect_uri);
-
     this.ResetAuthorizationData();
 
     this.authenticationSource.next(false);
-    window.location.href = url;
+    window.location.href = location.origin;
   }
 
   public HandleError(error: any) {
@@ -208,29 +137,29 @@ export class SecurityService {
 
     if (typeof token !== 'undefined') {
       let encoded = token.split('.')[1];
-      /**
-       * data = {
-       * nonce: "45534534543543"
-       * }
+      /*
+{
+"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "0931421322",
+  "jti": "26bc8655-2028-498f-8fc3-428e19db83db",
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "customer",
+  "exp": 1619705815,
+  "iss": "http://localhost:5001",
+  "aud": "http://localhost:4200"
+}
        */
       data = JSON.parse(this.urlBase64Decode(encoded));
     }
     return data;
   }
 
-  private getUserData = (): Observable<string[]> =>{
-    if(this.authorityUrl === ''){
-      this.authorityUrl = this.storage.retrieve('IdentityUrl');
+  private getUserData(): Observable<string[]>{
+    if(this.identityUrl === ''){
+      this.identityUrl = this.storage.retrieve('IdentityUrl');
     }
 
-    /**
-     * options = {
-     * headers: "HttpHeaders()"
-     * }
-     */
     const options = this.setHeaders();
 
-    return this._http.get<string[]>(`${this.authorityUrl}/connect/userinfo`, options)
+    return this._http.get<string[]>(`${this.identityUrl}/api/customers/info`, options)
     .pipe<string[]>((info:any) => info);
   }
 
@@ -246,9 +175,32 @@ export class SecurityService {
     const token = this.GetToken();
 
     if(token !== ''){
-      httpOptions.headers = httpOptions.headers.set('Authorization', `Bearer tokensercurity${token}`);
+      httpOptions.headers = httpOptions.headers.set('Authorization', `Bearer ${token}`);
     }
     return httpOptions;
   }
 
+  public ResetAuthorizationData() {
+    this.IsAuthorized = false;
+    this.storage.store('isAuthorized', this.IsAuthorized);
+  }
+
+  GetToken(): any {
+    return this.storage.retrieve('accessToken');
+  }
+
+}
+
+/*
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDkzMTQyMTMyMSIsImp0aSI6IjEwNDA4OTFiLTViYzctNDc1Ny04YjU1LTM5ZjVhZDM1MjY2NyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6ImN1c3RvbWVyIiwiZXhwIjoxNjE5NjkyMjUwLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMDEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.1cSfNAlyR-E-AkC69DpQkRGCgFPK2srw9Dha2KVt150",
+    "expiration": "2021-04-29T10:30:50Z",
+    "refreshToken": "bcbb0ca0-3d68-47ac-b6e1-92bdf638b768"
+}
+*/
+
+interface IAuthorizeResponseSuccess {
+  token: string,
+  refreshToken: string,
+  expiration: string
 }

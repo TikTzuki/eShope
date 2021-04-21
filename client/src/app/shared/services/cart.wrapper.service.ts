@@ -30,7 +30,7 @@ export class CartWrapperService {
       // TODO: Can mapping from sku to cart item here!!!
       this.addItemToCartSource.next(item);
     } else {
-      this.identityService.Authorize();
+      this.identityService.GoToLoginPage();
     }
   }
 

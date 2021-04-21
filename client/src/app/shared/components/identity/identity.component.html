@@ -1,5 +1,5 @@
 <div class="esh-identity">
-    <div *ngIf="authenticated" class="esh-identity-unauthenticate">
+    <div *ngIf="!authenticated" class="esh-identity-unauthenticate">
         <div class="identity-content-block">
             <a routerLink="/sign-up">
                 Sign-up <i class="fas fa-user"></i>
@@ -14,7 +14,7 @@
 
     <section class="esh-identity-section identity-content-block" *ngIf="authenticated">
         <a [routerLink]="'account'" style="display: flex;">
-            <div class="esh-identity-name">Hello, {{userName}}</div>
+            <div class="esh-identity-name">Hello, {{customer.name}}</div>
             <p>
                 <i class="fas fa-user"></i>
             </p>
@@ -22,17 +22,17 @@
 
     </section>
 
-    <section class="esh-identity-drop identity-content-block" [routerLink]="['orders']" *ngIf="authenticated">
+    <!-- <section class="esh-identity-drop identity-content-block" [routerLink]="['orders']" *ngIf="authenticated">
         <a [routerLink]="['orders']" style="display: flex;">
             <div class="esh-identity-name esh-identity-name--upper">My orders</div>
             <p>
                 <i class="fas fa-bars"></i>
             </p>
         </a>
-    </section>
+    </section> -->
 
     <section class="identity-content-block">
-        <div class="esh-identity-item identity-content-block" (click)="logoutClicked($event)">
+        <div class="esh-identity-item identity-content-block" (click)="logout()">
             <div class="esh-identity-name esh-identity-name--upper">Log out</div>
             <p>
                 <i class="fas fa-sign-out-alt"></i>

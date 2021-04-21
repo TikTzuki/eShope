@@ -17,6 +17,7 @@ export class CatalogService{
   constructor(
     private service: DataService, private configurationService: ConfigurationService
   ){
+    console.log('catalog service contruct');
     this.configurationService.settingLoaded$.subscribe(x => {
       this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/catalog';
       this.categoryUrl = this.configurationService.serverSettings.purchaseUrl + '/api/categories';
@@ -26,7 +27,7 @@ export class CatalogService{
   
   getCatalog(pageIndex: number, pageLimit: number, category: number, brand: string): Observable<ICatalog> {
     let url = this.catalogUrl; 
-
+    console.log('get catalog', url);
     url = url
       + '?page=' + pageIndex
       + '&limit=' + pageLimit;

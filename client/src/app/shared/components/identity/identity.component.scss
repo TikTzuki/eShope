@@ -10,6 +10,8 @@
 
 .identity-content-block {
     display: flex;
+    cursor: pointer;
+    color: $color-foreground-dark;
 }
 
 .esh-identity-name {
