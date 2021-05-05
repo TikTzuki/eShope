@@ -10,18 +10,19 @@
                 <div class="alert alert-warning" role="alert">&nbsp;{{errorMessage}}</div>
             </div>
         </div>
-        <div class="container">
+        <div class="container" *ngIf="cart">
             <div class="list-header row">
-                <div class="checkbox-wrap">
-                    <label class="next-checkbox list-header-checkbox">
-                    <span class="next-checkbox-inner">
-                        <i class="next-icon next-icon-select next-icon-xs"></i>
-                    </span>
-                    <input type="checkbox" aria-checked="false" value="on">
-                </label> Chon tat ca (1 san pham)
+                <div class="form-check d-flex align-items-center">
+                    <!-- <span class="next-checkbox-inner">
+                            <i class="next-icon next-icon-select next-icon-xs"></i>
+                        </span> -->
+                    <input type="checkbox" class="form-check-input" (click)="selectCartItem(cart.items)" [checked]="cartItems.length>0">
+                    <label class="form-check-label ">
+                        Select all
+                    </label>
                 </div>
                 <div class="list-header-operations">
-                    <div class="btn-wrap automation-btn-delete">
+                    <div class="btn-wrap automation-btn-delete" (click)="removeCartItem(cartItems)">
                         <fa-icon icon="trash"></fa-icon>
                         <span class="list-header-operation-text">Xoa</span>
                     </div>
@@ -29,20 +30,20 @@
             </div>
             <div class="checkout-shop-children" *ngFor="let item of cart?.items">
                 <div class="cart-item row">
-                    <section class="cart-item cart-item-left col-3 hidden-lg-down">
+                    <div class="cart-item cart-item-left col-3 hidden-lg-down d-flex">
                         <!-- TODO: handle hover and click -->
-                        <label class="next-checkbox cart-item-checkbox">
+                        <!-- <label class="next-checkbox cart-item-checkbox">
                             <span class="next-checkbox-inner">
                                 <i class="next-icon next-icon-select next-icon-xs"></i>
                             </span>
-                            <input type="checkbox" aria-checked="false" value="on">
-                        </label>
+                        </label> -->
+                        <input type="checkbox" aria-checked="false" (click)="selectCartItem([item])" [checked]="cartItems.indexOf(item) != -1">
                         <div class="img-wrap">
                             <a href="#" class="automation-link-from-image-to-prod">
                                 <img src="{{item.image | prependHost}}" class="cart-img">
                             </a>
                         </div>
-                    </section>
+                    </div>
                     <section class="cart-item cart-item--middle col-3">
                         <a href="#" class="automation-link-from-title-to-prod title"> {{item.name}}</a>
                         <a href="#" class="automation-link-from-sub-title-to-prod sku"> {{item.variation}}</a>
@@ -131,7 +132,7 @@
                             <span class="checkout-summary-noline-value">{{shippingFee | currency}} ₫</span>
                         </div>
                     </div>
-                    <div class="checkout-summary-row">
+                    <!-- <div class="checkout-summary-row">
                         <div class="checkout-summary-label">
                             Payment Method
                         </div>
@@ -145,7 +146,7 @@
                             </span>
                             </span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="checkout-order-total">
                     <div class="checkout-order-total-row">
@@ -167,7 +168,7 @@
 <!-- Model -->
 <ng-template #content let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <h4 class="modal-title" id="modal-basic-title">Confirm order</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>

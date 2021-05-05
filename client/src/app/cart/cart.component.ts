@@ -23,7 +23,7 @@ import { IOrderItem } from '../shared/models/orderItem.model';
 export class CartComponent implements OnInit {
   errorMessages: any;
   cart: ICart;
-  cartItems: ICartItem[];
+  cartItems: ICartItem[] = [];
   provisional: number = 0;
   shippingFee: number = 0;
   totalPrice: number = 0;
@@ -93,21 +93,20 @@ export class CartComponent implements OnInit {
     if (item.quantity < 1) {
       item.quantity = 1;
     }
-    this.service.getSkuMappingItem(item).subscribe({
+    this.service.getSkuFormCartItem(item).subscribe({
       next: sku => {
-        console.log(sku);
         maximunQuantity = sku.available;
       },
       complete: () => {
         console.log('quantity' + maximunQuantity);
         if (maximunQuantity < item.quantity) {
-          console.log('smaller');
           item.quantity = maximunQuantity;
+        } else {
+          this.calculateTotalPrice();
+          this.service.setCart(this.cart).subscribe({
+            next: x => console.log('cart updated:', x)
+          });
         }
-        this.calculateTotalPrice();
-        this.service.setCart(this.cart).subscribe({
-          next: x => console.log('cart updated:', x)
-        });
       }
     });
   }
@@ -122,6 +121,23 @@ export class CartComponent implements OnInit {
     this.itemQuantityChanged(item);
   }
 
+  selectCartItem(itemRemoves: ICartItem[]) {
+    // new Observable((observer) => {
+    //   observer.next("hihi");
+    // }).subscribe(res => {
+    //   console.log(res);
+      itemRemoves.forEach(item => {
+        if (this.cartItems.indexOf(item) == -1) {
+          this.cartItems.push(item);
+        } else {
+          this.cartItems.splice(this.cartItems.indexOf(item), 1);
+        }
+      });
+      console.log(this.cartItems);
+    // }
+    // );
+  }
+
   removeCartItem(itemRemoves: ICartItem[]) {
     let observables = [];
     itemRemoves.forEach(itemRemove => {
@@ -131,6 +147,7 @@ export class CartComponent implements OnInit {
     combineLatest(observables)
       .subscribe({
         next: res => {
+          this.cartItems = [];
           this.getCart();
           this.cartWrapper.updateBadge();
           this.loadData();
@@ -151,8 +168,8 @@ export class CartComponent implements OnInit {
   }
 
   checkOut() {
-    let addressObj: IAddress = JSON.parse(this.addressJsonString);
-    let address = `${addressObj.street}, ${addressObj.address1}, ${addressObj.address2}, ${addressObj.address3}`;
+    const addressObj: IAddress = JSON.parse(this.addressJsonString);
+    const address = `${addressObj.street}, ${addressObj.address1}, ${addressObj.address2}, ${addressObj.address3}`;
     const order: IOrder = this.mapCartInfoCheckout(this.cart, this.selectedPayment.value, address);
     this.service.createOrder(order)
       .subscribe({
@@ -165,10 +182,10 @@ export class CartComponent implements OnInit {
               this.service.setCartEmpty().subscribe({
                 next: (res) => {
                   this.cart = res;
-                  if(order.paymentMethod == EPaymentMethod.COD){
-                  this.router.navigateByUrl('/paymentsuccess/' + insertedOrder.id);
+                  if (order.paymentMethod == EPaymentMethod.COD) {
+                    this.router.navigateByUrl('/paymentsuccess/' + insertedOrder.id);
                   } else {
-                  this.router.navigateByUrl('/checkout/' + insertedOrder.id);
+                    this.router.navigateByUrl('/checkout/' + insertedOrder.id);
                   }
                 }
               });
@@ -227,23 +244,42 @@ stringify(str: any): string {
   return JSON.stringify(str);
 }
 
-confirmCheckout(content) {
+  confirmCheckout(content) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
-    .result.then((result) => {
-      this.checkOut();
-    }, (reason) => {});
+      .result
+      .then((result) => {
+        // this.checkOut();
+        return true;
+      }, (reason) => (false))
+      .then((res) => {
+        console.log('confirm order', res);
+        return res ? this.confirmPaymentMethod() : false;
+      }, (reason) => (false))
+      .then((paymentResult) => {
+        if(paymentResult){
+          this.selectedPayment = JSON.parse(paymentResult);
+          this.checkOut();
+        }
+      })
+      .catch(error=>{console.log(error);});
   }
 
-changePaymentMethod() {
+  confirmPaymentMethod(): Promise<any> {
     const modelPayment = this.modalService.open(ModalComponent, { ariaLabelledBy: 'modal-basic-title' })
     modelPayment.componentInstance.model = this.paymentList;
-    modelPayment.result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-      console.log(result);
-      this.selectedPayment = JSON.parse(result);
-    }, (reason) => {
-      this.closeResult = `Dismissed ${(reason)}`;
-    });
+    return modelPayment.result;
+  }
+
+changePaymentMethod():Promise<any> {
+    const modelPayment = this.modalService.open(ModalComponent, { ariaLabelledBy: 'modal-basic-title' })
+    modelPayment.componentInstance.model = this.paymentList;
+    return modelPayment.result;
+    // .then((result) => {
+    //   this.closeResult = `Closed with: ${result}`;
+    //   console.log(result);
+    //   this.selectedPayment = JSON.parse(result);
+    // }, (reason) => {
+    // });
   }
 }
 

@@ -95,16 +95,9 @@ export class CartService {
     return this.setCart(this.cart);
   }
 
-  getSkuMappingItem(item: ICartItem): Observable<ISku> {
+  getSkuFormCartItem(item: ICartItem): Observable<ISku> {
     const url = this.purchaseUrl + '/api/skus/' + item.skuId;
-    return this.service.get(url).pipe<ISku>(tap({
-      next: (response: any) => {
-        if (response.status === 204) {
-          return null;
-        }
-        return response;
-      }
-    }));
+    return this.service.get(url).pipe<ISku>(map((res: any) => res.data));
   }
 
   setCart(cart: ICart): Observable<boolean> {
