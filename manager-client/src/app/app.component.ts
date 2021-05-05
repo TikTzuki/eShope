@@ -12,7 +12,6 @@ import { Title } from '@angular/platform-browser';
 export class AppComponent {
   Authenticated: boolean = false;
   subscription!: Subscription;
-
   constructor(
     private titleService: Title,
     private securityService: SecurityService,
@@ -32,4 +31,5 @@ export class AppComponent {
   public setTitle(newTitle: string){
     this.titleService.setTitle(newTitle);
   }
+
 }

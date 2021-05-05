@@ -1,3 +1,4 @@
+import { IAddress } from './address.model';
 export interface ICustomer{
   id: number;
   name: string;
@@ -10,13 +11,4 @@ export interface ICustomer{
   refreshToken: string;
   refreshExpries: string;
   address: IAddress[]
-}
-
-export interface IAddress{
-  id: number;
-  customerId: number;
-  street: string;
-  address1: string;
-  address2: string;
-  address3: string;
 }

@@ -15,10 +15,10 @@ export class DataService {
   get(url: string, param?: any): Observable<Response> {
     let options = {};
     this.setHeaders(options);
-
     return this.http.get(url, options)
       .pipe(
         tap((res: Response) => {
+          console.log(`get ${url}`,res);
           return res;
         }),
         catchError(this.handleError)
@@ -31,9 +31,6 @@ export class DataService {
 
     return this.http.get(url, {responseType: 'blob'});
   }
-  // postWithId(url: string, data: any, params?: any): Observable<Response>{
-  //   return this.doPost(url, data, true, params);
-  // }
 
   post(url: string, data: any, params?: any): Observable<Response> {
     return this.doPost(url, data, false, params);
@@ -72,12 +69,15 @@ export class DataService {
       )
   }
 
-  delete(url: string, params?: any) {
+  delete(url: string, params?: any):Observable<Response> {
     let options = {};
     this.setHeaders(options);
-
-    this.http.delete(url, options)
-      .subscribe((res) => { console.log(res) });
+    return this.http.delete(url, options)
+      .pipe(tap((res: Response) => {
+        return res
+      }),
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: any) {
@@ -88,15 +88,17 @@ export class DataService {
         `status: ${error.status}, ` +
         `statusText: ${error.statusText}, ` +
         `message: ${error.error.message}`);
+      if (error.status == 401 || error.status == 403) {
+          this.securityService.Logoff();
+        }
     }
-
     return throwError(error || 'server error');
   }
 
   private setHeaders(options: any, needId?: boolean) {
     if (needId && this.securityService) {
       options.headers = new HttpHeaders()
-        .append('Authorization', 'Bearer' + this.securityService.GetToken())
+        .append('Authorization', 'Bearer ' + this.securityService.GetToken())
         .append('x-requestid', Guid.newGuid());
     } else if (this.securityService) {
       options.headers = new HttpHeaders()

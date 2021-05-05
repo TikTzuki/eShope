@@ -1,29 +1,20 @@
-import { Subscription, Observable, concat, interval } from 'rxjs';
-import { Component, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Subscription, Observable, concat, interval, combineLatest } from 'rxjs';
+import { Component, OnInit} from '@angular/core';
 import { CartWrapperService } from '../shared/services/cart.wrapper.service';
-import { IOrder } from '../shared/models/order.model';
 import { CartService } from './cart.service';
-import { IOrderItem } from '../shared/models/orderItem.model';
-import { error } from 'protractor';
 import { ICart } from '../shared/models/cart.model';
 import { ConfigurationService } from '../shared/services/configuration.service';
 import { ICartItem } from '../shared/models/cartItem.model';
-import { ISku } from '../shared/models/sku.model';
 import { Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-import { IAddress } from '../shared/models/customer.model';
-import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCreditCard, fas } from '@fortawesome/free-solid-svg-icons';
-import { faMoneyBillAlt } from '@fortawesome/free-solid-svg-icons';
-import { Input } from '@angular/core';
 import { ModalDismissReasons, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { resolve } from 'node:path';
 import { ModalComponent } from '../shared/components/modal/modal.component';
-import { Modal } from 'bootstrap';
 import { SecurityService } from '../shared/services/security.service';
 import { EPaymentMethod } from '../shared/models/paymentMethod.const';
+import { IAddress } from '../../../../manager-client/src/app/shared/models/address.model';
+import { IOrder } from '../shared/models/order.model';
+import { DateFormat } from '../shared/util/date.format';
+import { EOrderStatus } from '../shared/models/orderStatus.const';
+import { IOrderItem } from '../shared/models/orderItem.model';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -32,6 +23,7 @@ import { EPaymentMethod } from '../shared/models/paymentMethod.const';
 export class CartComponent implements OnInit {
   errorMessages: any;
   cart: ICart;
+  cartItems: ICartItem[];
   provisional: number = 0;
   shippingFee: number = 0;
   totalPrice: number = 0;
@@ -126,25 +118,27 @@ export class CartComponent implements OnInit {
   }
 
   itemQuantityChangedUp(item: ICartItem) {
-    item.quantity = item.quantity + 1;
+    item.quantity = Number(item.quantity) + 1;
     this.itemQuantityChanged(item);
   }
 
-  // onChangeAddress($event) {
-  //   console.log($event.target.value);
-  // }
-
-  removeCartItem(event: any, itemRemove: ICartItem) {
-    this.service.removeCartItem(itemRemove).subscribe({
-      next: x => console.log(x)
-    })
-    this.getCart();
-    this.cartWrapper.updateBadge();
+  removeCartItem(itemRemoves: ICartItem[]) {
+    let observables = [];
+    itemRemoves.forEach(itemRemove => {
+      const observable = this.service.removeCartItem(itemRemove);
+      observables.push(observable);
+    });
+    combineLatest(observables)
+      .subscribe({
+        next: res => {
+          this.getCart();
+          this.cartWrapper.updateBadge();
+          this.loadData();
+        }
+      });
   }
 
   update(): Observable<boolean> {
-    // this.cart.shippingFee = this.shippingFee;
-    // this.cart.totalPrice = this.totalPrice;
     const setCartObservable = this.service.setCart(this.cart);
     setCartObservable
       .subscribe(
@@ -157,19 +151,63 @@ export class CartComponent implements OnInit {
   }
 
   checkOut() {
-    let addressObj:IAddress = JSON.parse(this.addressJsonString);
+    let addressObj: IAddress = JSON.parse(this.addressJsonString);
     let address = `${addressObj.street}, ${addressObj.address1}, ${addressObj.address2}, ${addressObj.address3}`;
-    let isSuccessed = this.service.createOrder(this.cart, this.selectedPayment.value, address);
-    isSuccessed.subscribe({
-      next: res => { },
-      complete: () => {
-        this.service.setCartEmpty().subscribe({
-          next: (res)=>{
-            this.cart = res;
-          }
-        });
-      }
-    });
+    const order: IOrder = this.mapCartInfoCheckout(this.cart, this.selectedPayment.value, address);
+    this.service.createOrder(order)
+      .subscribe({
+        next: insertedOrder => {
+          order.orderItems.forEach(item => {
+            item.orderId = insertedOrder.id;
+          })
+          this.service.createOrderItems(order.orderItems).subscribe({
+            next: res => {
+              this.service.setCartEmpty().subscribe({
+                next: (res) => {
+                  this.cart = res;
+                  if(order.paymentMethod == EPaymentMethod.COD){
+                  this.router.navigateByUrl('/paymentsuccess/' + insertedOrder.id);
+                  } else {
+                  this.router.navigateByUrl('/checkout/' + insertedOrder.id);
+                  }
+                }
+              });
+            }
+          })
+        },
+        error: err => {
+          alert('this product is sold-out');
+        }
+      });
+  }
+
+  mapCartInfoCheckout(cart: ICart, paymentMethod, address): IOrder{
+    const order: IOrder = {
+      customerId: cart.customerId,
+      createDate: DateFormat.formatISO(new Date()),
+      updateDate: DateFormat.formatISO(new Date()),
+      shippingFee: cart.shippingFee,
+      shippingAddress: address,
+      totalPrice: cart.totalPrice,
+      status: paymentMethod == EPaymentMethod.COD ? EOrderStatus.Pending : EOrderStatus.Unpaid,
+      paymentMethod,
+      id: 0,
+      orderItems: cart.items.map((cartItem) => {
+        let orderItem: IOrderItem = {
+          id: 0,
+          image: cartItem.image,
+          price: cartItem.itemPrice,
+          name: cartItem.name,
+          orderId: -1,
+          quantity: cartItem.quantity,
+          skuId: cartItem.skuId,
+          variation: cartItem.variation
+        };
+        return orderItem;
+      })
+    };
+
+    return order;
   }
 
   private calculateTotalPrice() {
@@ -192,19 +230,10 @@ stringify(str: any): string {
 confirmCheckout(content) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
     .result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-      console.log(result);
       this.checkOut();
-    }, (reason) => {
-      if (reason === ModalDismissReasons.ESC) {
-        console.log('by pressing ESC');
-      } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-        console.log('by clicking on a backdrop');
-      } else {
-        console.log(`with: ${reason}`);
-      }
-    });
+    }, (reason) => {});
   }
+
 changePaymentMethod() {
     const modelPayment = this.modalService.open(ModalComponent, { ariaLabelledBy: 'modal-basic-title' })
     modelPayment.componentInstance.model = this.paymentList;

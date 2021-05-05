@@ -27,23 +27,24 @@ export class OrderListService {
     }
   }
 
-  getOrdersCatalog(params: {[param:string]:string}):Observable<ICatalog<IOrder>>{
-    console.log(this.orderUrl);
-    let url = this.orderUrl + (params ? '?' : '');
-    for(const [key, value] of Object.entries(params)){
-      if(value){
-        url += `${key}=${value}&`;
+  getOrdersCatalog(params: {[param:string]:any}):Observable<ICatalog<IOrder>>{
+    let url = this.orderUrl;
+    if (params &&  Object.values(params).some(value=>value)) { 
+      url += '?';
+      for (const [key, value] of Object.entries(params)) {
+        if (value) {
+          url += `${key}=${value}&`;
+        }
       }
+      url = url.substr(0, url.lastIndexOf('&'));
     }
-    url = url.substr(0, url.lastIndexOf('&'));
-    console.log(url);
     return this.service.get(url).pipe<ICatalog<IOrder>>(tap((response: any)=>{
       return response;
     }))
   }
 
   updateOrder(order: IOrder){
-    let url = this.orderUrl.endsWith('/') ? this.orderUrl : this.orderUrl+'/';
+    let url = `${this.orderUrl}/${order.id}`;
     return this.service.put(url, order).pipe(tap((response:any)=>{
       return response;
     }))

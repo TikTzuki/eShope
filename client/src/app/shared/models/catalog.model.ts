@@ -1,8 +1,8 @@
 import { IProduct } from './product.model';
 
-export interface ICatalog {
+export interface ICatalog<T> {
   pageIndex: number;
-  data: IProduct[];
+  data: T[];
   pageSize: number;
   count: number;
 }

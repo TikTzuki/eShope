@@ -3,6 +3,15 @@ import { SecurityService } from '../../shared/services/security.service';
 import { AccountService } from '../account.service';
 import { Subscription } from 'rxjs';
 import { IOrder } from '../../shared/models/order.model';
+import { EOrderStatus } from '../../shared/models/orderStatus.const';
+import { IPager } from '../../shared/models/pager.model';
+import { EPaymentMethod } from '../../shared/models/paymentMethod.const';
+import {
+    ConfirmModalComponent
+} from '../../shared/components/confirm-modal/confirm-modal.component';
+import { AbstractControlOptions, FormControl } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, ValidatorFn } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit } from '@angular/core';
 
@@ -14,8 +23,26 @@ import { Component, OnInit } from '@angular/core';
 export class OrderComponent implements OnInit {
   authSubscription: Subscription;
   authenticated: boolean;
-  selectedTab = 1;
+  selectedTab: string = EOrderStatus.All;
   orders: IOrder[];
+  currentQuery = {
+    pageIndex: 0,
+    pageSize: 4,
+    status: EOrderStatus.All,
+  };
+  OrderStatus = [
+    { name: 'All', value: EOrderStatus.All },
+    { name: 'Unpaid', value: EOrderStatus.Unpaid},
+    { name: 'Pending', value: EOrderStatus.Pending },
+    { name: 'Ready To Ship', value: EOrderStatus.ReadyToShip },
+    { name: 'Shipped', value: EOrderStatus.Shipped },
+    { name: 'Delivered', value: EOrderStatus.Delivered },
+    { name: 'Canceled', value: EOrderStatus.Canceled }
+  ];
+  EOrderStatus = EOrderStatus;
+  EPaymentMethod = EPaymentMethod;
+  paginationInfo: IPager;
+  searchFormGroup:FormGroup;
   constructor(
     private configurationService: ConfigurationService,
     private securityService: SecurityService,
@@ -39,51 +66,53 @@ export class OrderComponent implements OnInit {
     })
   }
 
-  changeTab(tab:number){
-    this.selectedTab = tab;
-    switch (tab) {
-      case 1:
-        this.loadOrders();
-        break;
-      case 2:
-        this.loadOrders('pending');
-        break;
-      case 3:
-        this.loadOrders('shipping');
-        break;
-      case 4:
-        this.loadOrders('delivered');
-        break;
-      case 5:
-        this.loadOrders('canceled');
-        break;
-      default:
-      break;
-    }
+  changeTab(orderStatus:string){
+    this.selectedTab = orderStatus;
+    this.currentQuery = { ...this.currentQuery, pageIndex: 0, status: orderStatus };
+    this.loadOrdersCatalog(this.currentQuery);
   }
 
   loadData(){
     console.log('load daata');
-    this.loadOrders();
+    this.loadOrdersCatalog(this.currentQuery);
+    this.loadSearchForm();
   }
 
-  loadOrders(status?:string){
-    this.service.getOrders(status).subscribe({
-      next: orders=>{
-        this.orders = orders;
+  loadOrdersCatalog(params?: { [param: string]: any }) {
+    this.service.getOrderCatalog(params).subscribe({
+      next: catalog => {
+        this.orders = catalog.data;
         console.log(this.orders);
+        this.paginationInfo = {
+          actualPage : catalog.pageIndex,
+          itemsPage : catalog.pageSize,
+          totalItems: catalog.count,
+          items: catalog.data.length,
+          totalPages: Math.ceil(catalog.count / catalog.pageSize)
+        }
       }
     })
   }
 
-  cancelOrder(orderId: number){
-    let order = this.orders.find(order => order.id === orderId);
-    order.status = 'canceled';
-    console.log(order);
-    this.service.updateOrder(order).subscribe({
-      next: res=>{},
-      complete: ()=>{this.loadData();}
-    })
+  searchOrder(){
+    console.log(this.searchFormGroup);
+    this.currentQuery = {...this.currentQuery, ...this.searchFormGroup.value};
+    console.log(this.currentQuery);
+    this.loadOrdersCatalog(this.currentQuery)
+  }
+
+  cancelOrder(orderId: number) {
+    let ref = this.modalService.open(ConfirmModalComponent);
+    ref.componentInstance.message = 'Cancel your order?';
+    ref.result.then((result) => {
+      let order = this.orders.find(order => order.id === orderId);
+      order.status = EOrderStatus.Canceled;
+      console.log(order);
+      this.service.updateOrder(order).subscribe({
+        next: res => { },
+        complete: () => { this.loadData(); }
+      })
+    }, (reason) => { });
   }
 
   openConfirmModal(content, orderId) {
@@ -92,4 +121,47 @@ export class OrderComponent implements OnInit {
     }, (reason) => {
     });
   }
+
+  loadSearchForm(){
+    this.searchFormGroup = new SearchFormGroup({
+      id: new FormControl(null),
+      createDate: new FormControl(null),
+      paymentMethod: new FormControl(null)
+    });
+  }
+
+    onPageChanged($event){
+    this.currentQuery.pageIndex = $event;
+    this.loadOrdersCatalog(this.currentQuery)
+  }
+
+  get Object(){
+    return Object;
+  }
+}
+
+class SearchFormGroup extends FormGroup{
+  constructor(
+    controls: { [key: string]: AbstractControl },
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[]
+    ) {
+      super(controls, validatorOrOpts, asyncValidator)
+    }
+
+    get idControl(): FormControl{
+      return this.get('id') as FormControl;
+    }
+
+    get createDateControl(): FormControl{
+      return this.get('createDate') as FormControl;
+    }
+
+    get paymentMethodControl(): FormControl{
+      return this.get('paymentMethod') as FormControl;
+    }
+
+    // get statusControl(): FormControl{
+    //   return this.get('status') as FormControl;
+    // }
 }

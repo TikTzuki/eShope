@@ -3,10 +3,12 @@ import { ConfigurationService } from '../shared/services/configuration.service';
 import { SecurityService } from '../shared/services/security.service';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
-import { IAddress, ICustomer } from '../shared/models/customer.model';
+import { ICustomer } from '../shared/models/customer.model';
 import { Observable } from 'rxjs';
 import { IAddressJson1 } from '../shared/models/addressJson.model';
 import { IOrder } from '../shared/models/order.model';
+import { IAddress } from '../shared/models/address.model';
+import { ICatalog } from '../shared/models/catalog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,13 +40,10 @@ export class AccountService {
    }
   }
 
-  // userInfo():Observable<ICustomer>{
-  //   let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
-  //   console.log(url);
-  //   return this.service.get(url).pipe<ICustomer>(tap((res: any)=>{
-  //     return res;
-  //   }))
-  // }
+    getUser(userId:number):Observable<ICustomer>{
+      return this.service.get(this.accountUrl + '/' + userId)
+      .pipe<ICustomer>(tap((res: any) => { return res }));
+  }
 
   getAddress():Observable<IAddress[]>{
     let url = this.addressUrl + '?customerId=' + this.sercurityService.UserData.id;
@@ -60,15 +59,7 @@ export class AccountService {
     }))
   }
 
-  // updateUser(user: ICustomer){
-  //   let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
-  //   return this.service.put(url, user).pipe<any>(tap((res:any)=>{
-  //     console.log("hihi");
-  //     return res;
-  //   }))
-  // }
-
-  createAddress(address: IAddress){
+  createNewAddress(address: IAddress){
     let url = this.addressUrl;
     return this.service.post(url, address).pipe<boolean>(tap((res: any)=>{
       console.log(res);
@@ -108,19 +99,26 @@ export class AccountService {
   }
 
   updateProfile(profile:ICustomer){
-    let url = this.accountUrl + '/' + this.sercurityService.UserData.id;
+    let url = `${this.accountUrl}/${this.sercurityService.UserData.id}`;
     return this.service.put(url, profile).pipe<any>(tap((res:any)=>{
       return res;
     }));
   }
 
-  getOrders(status?:string):Observable<IOrder[]>{
-    let url = this.orderUrl + '?cutsomerId=' + this.sercurityService.UserData.id 
-      + (status !== undefined ? '&status=' + status : '');
-      console.log(url);
-    return this.service.get(url, null).pipe<IOrder[]>(tap((res:any)=>{
+  getOrderCatalog(params: { [param: string]: any }): Observable<ICatalog<IOrder>> {
+    let url = `${this.orderUrl}?customerId=${this.sercurityService.UserData.id}`;
+    if (params && Object.values(params).some(value => value)) {
+      url += '&';
+      for (const [key, value] of Object.entries(params)) {
+        if (value) {
+          url += `${key}=${value}&`;
+        }
+      }
+      url = url.substr(0, url.lastIndexOf('&'));
+    }
+    return this.service.get(url, null).pipe<ICatalog<IOrder>>(tap((res: any) => {
       return res;
-    }))
+    }));
   }
 
   updateOrder(order: IOrder){

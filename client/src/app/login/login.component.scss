@@ -122,3 +122,11 @@
         }
     }
 }
+
+.change-action {
+    cursor: pointer;
+    color: $color-foreground-bright;
+    &:hover {
+        color: $color-foreground-brighter;
+    }
+}

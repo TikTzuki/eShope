@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaderResponse, HttpHeaders } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
 import { ISellerAccount } from '../models/seller.model';
+import { IRegistingRequest } from '../models/registingRequest.model';
 
 @Injectable({
   providedIn: 'root'
@@ -59,16 +60,16 @@ export class SecurityService {
     console.log(authorizedRequest, url);
     this._http.post(url, JSON.stringify(authorizedRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
       tap((res: any) => {
-        if (res.status >= 200 && res.status < 300) {
           return res;
-        }
-        return false;
       })
     ).subscribe({
       next: res => {
         if(res){
           this.SetAuthorizationData(res.token, res.refreshToken);
         }
+      },
+      error: err=>{
+        console.log(err);
       }
     });
   }
@@ -187,6 +188,20 @@ export class SecurityService {
     return this.storage.retrieve('accessToken');
   }
 
+  public Register(registingRequest: IRegistingRequest){
+    const url = this.identityUrl.endsWith('/') ? this.identityUrl+'api/register-seller' : `${this.identityUrl}/api/register-seller`;
+    console.log(registingRequest, url);
+    this._http.post(url, JSON.stringify(registingRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
+      tap((res:any)=>{
+          return res;
+      })
+    ).subscribe({
+      next: res=>{
+          window.alert("success!!!");
+      },
+      error: err => window.alert("user is already exists")
+    })
+  }
 }
 
 /*

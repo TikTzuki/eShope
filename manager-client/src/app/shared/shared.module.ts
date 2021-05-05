@@ -14,6 +14,8 @@ import { ConfigurationService } from './services/configuration.service';
 import { StorageService } from './services/storage.service';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { PrependHostPipe } from './pipes/prependHost.pipe';
+import { ConfirmModelComponent } from './components/confirm-model/confirm-model.component';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   imports: [
@@ -23,9 +25,12 @@ import { PrependHostPipe } from './pipes/prependHost.pipe';
     RouterModule,
     // NgbModule,
     HttpClientModule,
-    HttpClientJsonpModule
+    HttpClientJsonpModule,
+    //new
+    BrowserModule
   ],
   declarations: [
+    ConfirmModelComponent,
     PagerComponent,
     HeaderComponent,
     PageNotFoundComponent,
@@ -39,14 +44,14 @@ import { PrependHostPipe } from './pipes/prependHost.pipe';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    // NgbModule,
-    // Provider
+    NgbModule,
     PagerComponent,
     PageNotFoundComponent,
     UppercasePipe,
     NavbarComponent,
     PrependHostPipe,
-    HeaderComponent
+    HeaderComponent,
+    ConfirmModelComponent
   ]
 })
 export class SharedModule {

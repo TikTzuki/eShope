@@ -61,7 +61,7 @@
                         <div class="upload-box" [formGroupName]="imageIndex">
                             <i class="fas fa-times-circle" (click)="colorsFormGroup.controls.images.removeImage(imageIndex)"></i>
                             <input type="file" name="image" class="input-image" (change)="colorsFormGroup.controls.images.showPreview($event, imageIndex)">
-                            <img [src]="imageFormGroup.controls.url.value.startsWith('data:image/')? imageFormGroup.controls.url.value : (imageFormGroup.controls.url.value | prependHost)" class="thumnail-prieview">
+                            <img [src]="imageFormGroup.controls?.url?.value?.startsWith('data:image/')? imageFormGroup.controls.url.value : (imageFormGroup.controls.url.value | prependHost)" class="thumnail-prieview">
                         </div>
                     </div>
                     <div class="add-image upload-box" (click)="colorsFormGroup.controls.images.addImage()">
@@ -139,7 +139,7 @@
                                 </td>
                                 <td>
                                     <div class="table-cell-wrapper">
-                                        <input class="form-control" type="text" formControlName="sellerSku">
+                                        <input class="form-control" type="text" formControlName="sellerSku" (change)="commitProductForm()">
                                         <div *ngIf="skuForm.controls.sellerSku.invalid" class="alert-sm"><small>*</small></div>
                                     </div>
                                 </td>
@@ -195,9 +195,18 @@
                 <input type="text" class="form-control" formControlName="height">
             </div>
         </div>
+        <div class="mb-3">
+            <div class="form-check">
+                <label class="form-check-label">Active
+                <input type="checkbox" class="form-check-input" formControlName="status">
+                <span class="form-check-sign"><span class="check"></span></span>
+                </label>
+            </div>
+        </div>
     </div>
     <div class="control-module module">
         <div class="d-flex justify-content-center">
+            <button class="btn btn-lg" routerLink="/products"> Cancel </button>
             <button class="btn btn-lg btn-primary" (click)="saveProduct()"> Save </button>
         </div>
     </div>

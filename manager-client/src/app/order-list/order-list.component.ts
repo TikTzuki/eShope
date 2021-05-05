@@ -7,10 +7,13 @@ import { EPaymentMethod } from '../shared/models/paymentMethod.const';
 import { ICatalog } from '../shared/models/catalog.model';
 import { Observable } from 'rxjs';
 import { IPager } from '../shared/models/pager.model';
+import { ConfirmModelComponent } from '../shared/components/confirm-model/confirm-model.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Validators } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormGroup, ValidatorFn } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { stat } from 'node:fs';
 
 @Component({
   selector: 'app-order-list',
@@ -18,11 +21,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./order-list.component.scss']
 })
 export class OrderListComponent implements OnInit {
-  selectedTab:string;
+  selectedTab:string = EOrderStatus.All;
   searchFormGroup: FormGroup;
   orders: IOrder[] = [];
   selectedOrders: IOrder[] = [];
   toggledOrders: number[] = [];
+  currentQuery = {
+    pageIndex: 0,
+    pageSize: 4,
+    status: null,
+  };
   OrderStatus = [
     { name: 'All', value: EOrderStatus.All },
     { name: 'Pending', value: EOrderStatus.Pending },
@@ -37,7 +45,8 @@ export class OrderListComponent implements OnInit {
   constructor(
     private service: OrderListService,
     private configurationService: ConfigurationService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
@@ -52,20 +61,18 @@ export class OrderListComponent implements OnInit {
 
   changeTab(orderStatus: string){
     this.selectedTab = orderStatus;
-    this.getOrdersCatalog( {
-      status: (orderStatus ? orderStatus:''),
-      pageIndex: 0,
-      pageSize: 10,
-      });
+    this.selectedOrders=[];
+    this.currentQuery = { ...this.currentQuery, pageIndex: 0, status: orderStatus };
+    this.getOrdersCatalog(this.currentQuery);
   }
 
   loadData(){
-    this.getOrdersCatalog({pageIndex:0, pageSize:10});
+    this.getOrdersCatalog(this.currentQuery);
     this.loadSearchForm();
   }
 
-  getOrdersCatalog(params?:{[param:string]: any} ){
-    this.service.getOrdersCatalog(params).subscribe({
+  getOrdersCatalog(query?:{[param:string]: any} ){
+    this.service.getOrdersCatalog(query).subscribe({
       next: catalog => {
         this.orders = catalog.data;
         console.log(this.orders);
@@ -73,7 +80,7 @@ export class OrderListComponent implements OnInit {
           actualPage : catalog.pageIndex,
           itemsPage : catalog.pageSize,
           totalItems: catalog.count,
-          items: catalog.pageSize,
+          items: catalog.data.length,
           totalPages: Math.ceil(catalog.count / catalog.pageSize)
         }
       }
@@ -84,14 +91,15 @@ export class OrderListComponent implements OnInit {
     this.searchFormGroup = new SearchFormGroup({
       id: new FormControl(null),
       createDate: new FormControl(null),
-      paymentMethod: new FormControl(null),
-      status: new FormControl(null)
+      paymentMethod: new FormControl(null)
     });
   }
 
   searchOrder() {
     console.log(this.searchFormGroup);
-    this.getOrdersCatalog(this.searchFormGroup.value);
+    this.currentQuery = {...this.currentQuery, ...this.searchFormGroup.value};
+    console.log(this.currentQuery);
+    this.getOrdersCatalog(this.currentQuery);
   }
 
   onCheckOrder($event, orderId?: number) {
@@ -131,19 +139,29 @@ export class OrderListComponent implements OnInit {
   }
 
   changeStatusOrders(selectedOrders: IOrder[], status: string) {
-    selectedOrders.forEach(order => {
-      order.status = status;
-      console.log(order);
-      this.service.updateOrder(order).subscribe(x => {
-        console.log(x);
-      })
-    });
+    let confirmRef = this.modalService.open(ConfirmModelComponent);
+    console.log("change status");
+    confirmRef.componentInstance.message = `Change status to ${status}`
+    confirmRef.result.then((result) => {
+      selectedOrders.forEach(order => {
+        order.status = status;
+        console.log(order);
+        this.service.updateOrder(order).subscribe(x => {
+          console.log(x);
+        })
+      });
+    }, (reason)=>{})
   }
 
   print(){
 
   }
   
+  onPageChanged($event){
+    this.currentQuery.pageIndex = $event;
+    this.getOrdersCatalog(this.currentQuery)
+  }
+
   get Object(){
     return Object;
   }
@@ -170,7 +188,7 @@ class SearchFormGroup extends FormGroup{
       return this.get('paymentMethod') as FormControl;
     }
 
-    get statusControl(): FormControl{
-      return this.get('status') as FormControl;
-    }
+    // get statusControl(): FormControl{
+    //   return this.get('status') as FormControl;
+    // }
 }

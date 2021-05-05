@@ -8,7 +8,7 @@
     </ul>
     <div class="table-container-tab">
         <div class="search-section d-flex align-items-center">
-            <form *ngIf="searchFormGroup" class="search-form row" [formGroup]="searchFormGroup">
+            <form class="search-form row" *ngIf="searchFormGroup" [formGroup]="searchFormGroup">
                 <div class="mb-3 col-3">
                     <label class="form-label">Order id</label>
                     <input type="text" class="form-control" formControlName="id">
@@ -23,14 +23,15 @@
                         <option *ngFor="let paymentMethod of Object.values(EPaymentMethod)" [value]="paymentMethod"> {{paymentMethod}} </option>
                     </select>
                 </div>
-                <div class="mb-3 col-3">
+                <!-- <div class="mb-3 col-3">
                     <label class="form-label">Status</label>
                     <select class="form-control custom-select" formControlName="status">
                         <option *ngFor="let status of OrderStatus" [value]="status.value"> {{status.name}}</option>
                     </select>
-                </div>
+                </div> -->
             </form>
             <button class="btn btn-primary" (click)="searchOrder()"> Search </button>
+            <button class="btn clear-btn" (click)="loadSearchForm()"><i class="fas fa-times"></i>  </button>
         </div>
         <div *ngIf="selectedOrders.length !=0" class="action-multiple d-flex">
             <button class="btn btn-sm" (click)="print()">Print</button>
@@ -162,7 +163,7 @@
                                 <div class="table-cell-wrapper">
                                     <div class="d-flex flex-column">
                                         <button *ngIf="order.status==EOrderStatus.Pending" class="btn btn-sm btn-success" (click)="changeStatusOrders([order], EOrderStatus.ReadyToShip)"> Ready to ship </button>
-                                        <button *ngIf="order.status==EOrderStatus.Pending" class="btn btn-sm btn-danger"> Cancel </button>
+                                        <button *ngIf="order.status==EOrderStatus.Pending" class="btn btn-sm btn-danger" (click)="changeStatusOrders([order], EOrderStatus.Canceled)"> Cancel </button>
                                         <button *ngIf="order.status!=EOrderStatus.Pending" class="btn btn-sm btn-info"> Details </button>
                                     </div>
                                 </div>
@@ -236,4 +237,6 @@
             </table>
         </div>
     </div>
+
+    <app-pager [model]="paginationInfo" (changed)="onPageChanged($event)"></app-pager>
 </div>

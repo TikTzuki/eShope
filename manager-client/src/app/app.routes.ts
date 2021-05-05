@@ -7,6 +7,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RouterModule, Routes } from "@angular/router";
 import { HaNoiTowerComponent } from './ha-noi-tower/ha-noi-tower.component';
 import { TaciComponent } from './taci/taci.component';
+import { QueenPuzzleComponent } from './queen-puzzle/queen-puzzle.component';
+import { RegisterComponent } from './login/register/register.component';
 
 
 export const routes: Routes = [
@@ -20,6 +22,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, data: { name: 'Profile', icon: 'fas fa-address-card' } },
   { path: 'hanoi-tower', component: HaNoiTowerComponent, data: null },
   { path: 'taci', component: TaciComponent, data: null },
+  {path: 'queen', component: QueenPuzzleComponent, data: null},
+  {path: 'register', component: RegisterComponent, data: null}
 ]
 
 export const routing = RouterModule.forRoot(routes);

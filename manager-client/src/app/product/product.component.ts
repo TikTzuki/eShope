@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { SecurityService } from '../shared/services/security.service';
+import { EProductStatus } from '../shared/models/productStatus.const';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -53,7 +54,7 @@ export class ProductComponent implements OnInit {
     if (!productId) {
       this.loadNewProductForm();
     } else {
-      this.loadProduct(productId);
+      this.loadProductForm(productId);
     }
   }
 
@@ -86,11 +87,12 @@ export class ProductComponent implements OnInit {
       weight: new FormControl(0, []),
       length: new FormControl(0, []),
       width: new FormControl(0, []),
-      height: new FormControl(0, [])
+      height: new FormControl(0, []),
+      status: new FormControl(true, [])
     })
   }
 
-  loadProduct(productId){
+  loadProductForm(productId){
     let product: IProduct;
     this.service.getProduct(productId).subscribe({
       next: res => {
@@ -111,7 +113,8 @@ export class ProductComponent implements OnInit {
           weight: new FormControl(product.skus[0].weight, []),
           length: new FormControl(product.skus[0].length, []),
           width: new FormControl(product.skus[0].width, []),
-          height: new FormControl(product.skus[0].height, [])
+          height: new FormControl(product.skus[0].height, []),
+          status: new FormControl(product.status==EProductStatus.Active, [])
         });
         console.log(this.productForm);
       }
@@ -234,6 +237,9 @@ export class ProductComponent implements OnInit {
   }
 
   commitProductForm(): IProduct {
+    let skus = this.productForm.get('skus') as SkusFormArray;
+    this.productForm.patchValue({skus: [...skus.controls.values()]});
+
     let product: IProduct = {
     productName : this.productForm.get("productName").value,
     brandId : this.productForm.brandIdValue,
@@ -242,7 +248,7 @@ export class ProductComponent implements OnInit {
     sellerId : this.securityService.UserData.id,
     skus : this.productForm.get('skus').value,
     id: this.productForm.idValue,
-    status: 'active'
+    status: this.productForm.statusValue ? EProductStatus.Active : EProductStatus.Disabled
     };
     product.skus.forEach(sku=>{
       sku.weight = this.productForm.weightValue;
@@ -252,6 +258,7 @@ export class ProductComponent implements OnInit {
       sku.images = this.productForm.getImageValuesByColor(sku.color);
       sku.available = sku.quantity;
     })
+    console.log(product);
     return product;
   }
 }
@@ -379,6 +386,10 @@ class ProductFormGroup extends FormGroup {
 
   get widthValue():number {
     return Number(this.get('width').value);
+  }
+
+  get statusValue():boolean{
+    return this.get('status').value;
   }
 }
 

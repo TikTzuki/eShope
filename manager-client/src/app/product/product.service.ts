@@ -92,22 +92,22 @@ export class ProductService {
   }
 
   modifyProduct(product:IProduct):Observable<any>{
-    let url = this.productUrl;
+    let url = `${this.productUrl}/${product.id}`;
     return this.service.put(url, product);
   }
 
   modifySku(sku: ISku):Observable<any>{
-    let url = this.skuUrl;
+    let url = `${this.skuUrl}/${sku.id}`;
     return this.service.put(url, sku);
   }
 
   deleteSku(skuId: number){
     let url = this.skuUrl + '/' + skuId;
-    return this.service.delete(url);
+    return this.service.delete(url).subscribe();
   }
 
   deleteImage(imageId:number){
     let url = this.imageUrl + '/' + imageId;
-    return this.service.delete(url);
+    return this.service.delete(url).subscribe();
   }
 }

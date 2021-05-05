@@ -2,9 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../account.service';
 import { SecurityService } from '../../shared/services/security.service';
 import { ConfigurationService } from '../../shared/services/configuration.service';
-import { ICustomer, IAddress } from '../../shared/models/customer.model';
+import { ICustomer } from '../../shared/models/customer.model';
 import { IAddressJson1, IAddressJson2, IAddressJson3 } from '../../shared/models/addressJson.model';
+import { Observable } from 'rxjs';
+import {
+  ConfirmModalComponent
+} from '../../shared/components/confirm-modal/confirm-modal.component';
+import { Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { IAddress } from 'src/app/shared/models/address.model';
 
 
 interface ICurrentAddress {
@@ -29,6 +37,9 @@ export class AddressComponent implements OnInit {
   address: IAddress[];
   currentAddress: ICurrentAddress;
   addressList: IAddressJson1[];
+  user: ICustomer;
+  addressForm: FormGroup;
+  address1s: any[] = [];
   constructor(
     private configurationService: ConfigurationService,
     private securityService: SecurityService,
@@ -53,119 +64,121 @@ export class AddressComponent implements OnInit {
     })
   }
 
-  getAddress() {
-    this.service.getAddress().subscribe({
-      next: res => {
-        this.address = res;
-      }
-    });
-  }
-
-  deleteAddress(id) {
-    this.service.deleteAddress(id);
-  }
-
   loadData() {
-    this.getAddress();
+    this.getUser();
   }
 
-  changeStreet($event){
-    this.currentAddress.street = $event.target.value;
-  };
-
-  changeAddress(addressId) {
-    this.address.forEach(address => {
-      if (address.id == addressId) {
-        this.currentAddress = {
-          level1_id: null,
-          id: address.id,
-          customerId: address.customerId,
-          street: address.street,
-          name: address.address1,
-          type: null,
-          level2s: null,
-          address2: null,
-          address3: null
-        }
-      }
-    });
-    this.service.getAddressList().subscribe({
-      next: res => {
-        this.addressList = res.data;
-        console.log(this.addressList);
-      }
-    })
-
-  }
-
-  createAddress(){
-    let address: IAddress = {
-      id: null,
-      customerId: this.currentAddress.customerId,
-      street: this.currentAddress.street,
-      address1: this.currentAddress.name,
-      address2: this.currentAddress.address2.name,
-      address3: this.currentAddress.address3.name,
-    }
-    console.log(address);
-    this.service.createAddress(address).subscribe({
-      next: x=> {},
-      complete: ()=>{
-        this.currentAddress = null;
-        this.loadData();
+  getUser() {
+    this.service.getUser(this.securityService.UserData.id).subscribe({
+      next: user => {
+        console.log(user);
+        this.user = user;
       }
     })
   }
 
-  modifySelectedAddress() {
-    let address: IAddress = {
-      id: this.currentAddress.id,
-      customerId: this.currentAddress.customerId,
-      street: this.currentAddress.street,
-      address1: this.currentAddress.name,
-      address2: this.currentAddress.address2.name,
-      address3: this.currentAddress.address3.name,
+  loadAddressForm(address?: IAddress) {
+    if (address) {
+      this.addressForm = new FormGroup({
+        street: new FormControl(address.street, [Validators.required]),
+        address1: new FormControl(address.address1, [Validators.required]),
+        address2: new FormControl(address.address2, [Validators.required]),
+        address3: new FormControl(address.address3, [Validators.required]),
+        isDefault: new FormControl(address.isDefault),
+        customerId: new FormControl(address.customerId),
+        id: new FormControl(address.id)
+      })
+    } else {
+      this.addressForm = new FormGroup({
+        street: new FormControl('', [Validators.required]),
+        address1: new FormControl('', [Validators.required]),
+        address2: new FormControl('', [Validators.required]),
+        address3: new FormControl('', [Validators.required]),
+        isDefault: new FormControl(false),
+        customerId: new FormControl(this.securityService.UserData.id),
+        id: new FormControl(0)
+      })
     }
-    this.service.updateAddress(address).subscribe({
-      next: x => { },
+  }
+
+  setAsDefault(addressId: number) {
+    let oldDefault = this.user.address.find(address => address.isDefault == true);
+    oldDefault.isDefault = false;
+    let newDefault = this.user.address.find(address => address.id == addressId);
+    newDefault.isDefault = true
+
+    this.service.updateAddress(newDefault).subscribe({
+      next: res => console.log(res),
       complete: () => {
-        this.currentAddress = null;
-        this.loadData();
+        this.service.updateAddress(oldDefault).subscribe({
+          next: res => console.log(res)
+        })
       }
     })
   }
-  
-  open(content, itemId) {
+
+  openAddressForm(content: any, address?: IAddress) {
+    this.loadAddressList();
+    this.loadAddressForm(address);
+
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       let promiseAddress = () => Promise.all([
-        this.service.deleteAddress(itemId).toPromise()
+        this.saveAddress().toPromise()
       ]);
       promiseAddress().then(() => this.loadData());
-      window.location.reload();
-    }, (reason) => {
-    });
+    }, (reason) => { });
   }
 
-  cancelAddress() {
-    this.currentAddress = null;
+  loadAddressList() {
+    this.service.getAddressList().subscribe({
+      next: res => {
+        this.address1s = res.data;
+      }
+    })
   }
-  
-  changeCurrentAddress1($event) {
-    let index = $event.target.value;
-    this.currentAddress = {
-      ...this.currentAddress,
-      ...this.addressList[index],
-      address2: this.addressList[index].level2s[0],
-      address3: this.addressList[index].level2s[0].level3s[0],
+
+  saveAddress(): Observable<any> {
+    if (this.addressForm.invalid) {
+      alert("check your input");
+      return null;
+    }
+    if (!this.addressForm.value.id) {
+      return this.service.createNewAddress(this.addressForm.value);
+    } else {
+      return this.service.updateAddress(this.addressForm.value);
     }
   }
 
-  changeCurrentAddress2($event) {
-    this.currentAddress.address2 = this.currentAddress.level2s[$event.target.value];
-    console.log(this.currentAddress.address2);
+  deleteAddress(addressId: number) {
+    let modalRef = this.modalService.open(ConfirmModalComponent);
+    modalRef.componentInstance.message = "Delete this address?";
+    modalRef.result.then((result) => {
+      let promiseDelete = () => Promise.all([
+        this.service.deleteAddress(addressId).toPromise()
+      ])
+      promiseDelete().then(() => this.loadData());
+    }, (reason) => { });
   }
 
-  changeCurrentAddress3($event) {
-    this.currentAddress.address3 = this.currentAddress.address2.level3s[$event.target.value];
+  get address2s(): any[] {
+    let selectedAddress1 = this.addressForm.get('address1').value;
+    let address2s = null;
+    for (let addressObj of this.address1s) {
+      if (addressObj.name == selectedAddress1) {
+        address2s = addressObj.level2s;
+      }
+    }
+    return address2s;
+  }
+
+  get address3s() {
+    let selectedAddress2 = this.addressForm.get('address2').value;
+    let address3s = null;
+    this.address2s.forEach(addressObj => {
+      if (addressObj.name == selectedAddress2) {
+        address3s = addressObj.level3s;
+      }
+    })
+    return address3s;
   }
 }

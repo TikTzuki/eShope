@@ -1,20 +1,21 @@
 import { Injectable } from "@angular/core";
-import { Subject, Observable, observable } from 'rxjs';
+import { Subject, Observable, observable, combineLatest } from 'rxjs';
 import { DataService } from '../shared/services/data.service';
 import { SecurityService } from '../shared/services/security.service';
 import { CartWrapperService } from '../shared/services/cart.wrapper.service';
 import { ConfigurationService } from "../shared/services/configuration.service";
 import { StorageService } from '../shared/services/storage.service';
-import { tap } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
 import { ICart } from '../shared/models/cart.model';
 import { ICartItem } from '../shared/models/cartItem.model';
 import { ISku } from '../shared/models/sku.model';
-import { IAddress } from '../shared/models/customer.model';
 import { IOrder } from '../shared/models/order.model';
 import { Router } from '@angular/router';
-import { Address } from "node:cluster";
-import { DatePipe } from "@angular/common";
 import { DateFormat } from "../shared/util/date.format";
+import { IAddress } from '../shared/models/address.model';
+import { ICustomer } from '../shared/models/customer.model';
+import { error } from 'protractor';
+import { EOrderStatus } from '../shared/models/orderStatus.const';
 import { IOrderItem } from '../shared/models/orderItem.model';
 
 @Injectable({
@@ -22,6 +23,7 @@ import { IOrderItem } from '../shared/models/orderItem.model';
 })
 export class CartService {
   private cartUrl: string = '';
+  private orderUrl: string = '';
   private purchaseUrl: string = '';
   cart: ICart = {
     id: null,
@@ -36,30 +38,28 @@ export class CartService {
 
   constructor(
     private service: DataService,
-    private authService: SecurityService,
+    private securityService: SecurityService,
     private cartEvents: CartWrapperService,
     private router: Router,
     private configurationService: ConfigurationService,
     private storageService: StorageService
   ) {
-    console.log('security service is authorized ' + authService.IsAuthorized);
-    if (this.authService.IsAuthorized) {
-      console.log('security service is authorized ' + authService.IsAuthorized);
-      if(this.authService.UserData){
+    if (this.securityService.IsAuthorized) {
         // this.cart.customerId = this.authService.UserData.sub;
-        this.cart.customerId = this.authService.UserData.id;
+        this.cart.customerId = this.securityService.UserData.id;
         if(this.configurationService.isReady){
           this.cartUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customer/cart';
+          this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
           this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
           this.loadData();
         } else {
           this.configurationService.settingLoaded$.subscribe(x => {
             this.cartUrl = this.configurationService.serverSettings.purchaseUrl + '/api/customer/cart';
+            this.orderUrl = this.configurationService.serverSettings.purchaseUrl + '/api/orders';
             this.purchaseUrl = this.configurationService.serverSettings.purchaseUrl;
             this.loadData();
           });
         }
-      }
     }
     this.cartEvents.orderCreated$.subscribe(x => {
       this.dropCart();
@@ -109,20 +109,13 @@ export class CartService {
 
   setCart(cart: ICart): Observable<boolean> {
     console.log('set cart', cart);
-    const url = this.cartUrl + '/'+ cart.customerId;
-    return this.service.put(url, cart).pipe<boolean>(tap((response: any) => response));
-  }
-
-  createOrder(cartCheckout, paymentMethod, address): Observable<IOrder> {
-    const url = this.purchaseUrl + '/api/orders';
-    const order = this.mapCartInfoCheckout(cartCheckout, paymentMethod, address);
-    return this.service.post(url, order).pipe<IOrder>(tap((res: any) => {
-      return res;
-    }));
+    const url = `${this.cartUrl}/${cart.id}`;
+    const cartForPut = { ...cart, items: JSON.stringify(cart.items) };
+    return this.service.put(url, cartForPut).pipe<boolean>(tap((response: any) => response));
   }
 
   setCartEmpty(): Observable<ICart>{
-    const url = this.cartUrl + '/' + this.cart.customerId;
+    const url = this.cartUrl + '/' + this.cart.id;
     let cart: ICart = {
       customerId: this.cart.customerId,
       id: this.cart.id,
@@ -130,70 +123,94 @@ export class CartService {
       shippingFee: 0,
       totalPrice: 0
     };
-    return this.service.put(url, cart).pipe<ICart>(tap((response: any) => {
+    const cartForPut = { ...cart, items: JSON.stringify(cart.items) };
+    return this.service.put(url, cartForPut).pipe<ICart>(tap((response: any) => {
       this.cartEvents.orderCreate();
       return response;
     }));
   }
 
+  createOrder(order: IOrder): Observable<IOrder> {
+    const url = this.purchaseUrl + '/api/orders';
+    return this.service.post(url, order).pipe<IOrder>(tap((res: any) => {
+      console.log(url, order, res);
+      return res;
+    }));
+  }
+
+  createOrderItems(orderItems : IOrderItem[]):Observable<any[]>{
+    const url = this.purchaseUrl + '/api/orderitems';
+    let observables = [];
+    orderItems.forEach(item => {
+      let observable = this.service.post(url, item).pipe<any>(tap((res: any) => {
+        console.log(url, orderItems, res);
+        return res;
+      }));
+      observables.push(observable);
+    })
+    return combineLatest(observables);
+  }
   getCart(): Observable<ICart> {
-    const url = this.cartUrl + '/' + this.cart.customerId;
+    const url = this.cartUrl;
     console.log('get cart', url);
-    return this.service.get(url).pipe<ICart>(tap(
-      {
-        next: (response: any) => {
-          if (response.status === 204) {
-            return null;
-          }
-          console.log('get cart');
-          return response;
-        }
-      }
-    ));
+    return this.service.get(url).pipe<ICart>(map((res: any) => {
+      console.log(res);
+      res.items = JSON.parse(res.items != null ? res.items : '[]');
+      return res;
+    }));
   }
 
-  getAddress(): Observable<IAddress[]>{
+  getAddress(): Observable<IAddress[]> {
     const url = this.purchaseUrl + '/address?customerId=' + this.cart.customerId;
-    return this.service.get(url).pipe<IAddress[]>(tap(
-      {
-        next: (res: any) => {
-          if (res.status === 204) {
-            return null;
-          }
-          return res;
-        }
-      }
-    ));
+    return this.securityService.getUser(this.securityService.UserData.id)
+    .pipe<IAddress[]>(map((res: any) => {
+      return res.address;
+    }))
+    // return this.service.get(url).pipe<IAddress[]>(tap(
+    //   {
+    //     next: (res: any) => {
+    //       if (res.status === 204) {
+    //         return null;
+    //       }
+    //       return res;
+    //     },
+    //     error: err =>{
+    //       console.log(err);
+    //         alert("You need to create a address!!!");
+    //         this.router.navigate(['/address']);
+    //     }
+    //   }
+    // ));
   }
 
-  mapCartInfoCheckout(cart: ICart, paymentMethod, address): IOrder{
-    const order: IOrder = {
-      customerId: cart.customerId,
-      createDate: DateFormat.formatISO(new Date()),
-      updateDate: DateFormat.formatISO(new Date()),
-      shippingFee: cart.shippingFee,
-      shippingAddress: address,
-      totalPrice: cart.shippingFee,
-      status: 'pending',
-      paymentMethod,
-      id: null,
-      orderItems: cart.items.map((cartItem) => {
-        let orderItem: IOrderItem = {
-          id: null,
-          image: cartItem.image,
-          itemPrice: cartItem.itemPrice,
-          name: cartItem.name,
-          order_id: null,
-          quantity: cartItem.quantity,
-          sku_id: cartItem.skuId,
-          variation: cartItem.variation
-        };
-        return orderItem;
-      })
-    };
+  // mapCartInfoCheckout(cart: ICart, paymentMethod, address): IOrder{
+  //   const order: IOrder = {
+  //     customerId: cart.customerId,
+  //     createDate: DateFormat.formatISO(new Date()),
+  //     updateDate: DateFormat.formatISO(new Date()),
+  //     shippingFee: cart.shippingFee,
+  //     shippingAddress: address,
+  //     totalPrice: cart.shippingFee,
+  //     status: EOrderStatus.Unpaid,
+  //     paymentMethod,
+  //     id: 0,
+  //     orderItems: cart.items.map((cartItem) => {
+  //       let orderItem: IOrderItem = {
+  //         id: 0,
+  //         image: cartItem.image,
+  //         itemPrice: cartItem.itemPrice,
+  //         name: cartItem.name,
+  //         orderId: null,
+  //         quantity: cartItem.quantity,
+  //         skuId: cartItem.skuId,
+  //         variation: cartItem.variation
+  //       };
+  //       return orderItem;
+  //     })
+  //   };
 
-    return order;
-  }
+  //   return order;
+  // }
 
   dropCart() {
     this.cart.items = [];
@@ -206,5 +223,21 @@ export class CartService {
         this.cart = cart;
       }
     })
+  }
+
+  getOrder(orderId: number): Observable<IOrder> {
+    const url = this.orderUrl + '/' + orderId;
+    return this.service.get(url).pipe<IOrder>(map((res: any)=> {
+      console.log(url, res);
+      return res.data;
+    }));
+  }
+
+  payment(info) {
+    const url = this.purchaseUrl + '/api/orders/payment';
+    return this.service.post(url, info).pipe<any>(tap((res: any) => {
+      console.log(url, res);
+      return res;
+    }));
   }
 }

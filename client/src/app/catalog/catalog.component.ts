@@ -12,6 +12,8 @@ import { ISku } from '../shared/models/sku.model';
 import { CartWrapperService } from '../shared/services/cart.wrapper.service';
 import { IBrand } from '../shared/models/brand.model';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import { EProductStatus } from '../shared/models/productStatus.const';
+import numberOnly from '../shared/util/validate';
 
 @Component({
   selector: 'app-catalog',
@@ -19,15 +21,26 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./catalog.component.scss']
 })
 export class CatalogComponent implements OnInit {
+  numberOnly:Function = numberOnly;
   brands!: IBrand[];
   categories!: ICategory[];
   categorySelected: number;
   brandSelected: string;
-  catalog: ICatalog;
+  catalog: ICatalog<IProduct>;
   paginationInfo: IPager;
   authenticated: boolean = false;
   authSubscription: Subscription;
   errorRecieved: boolean;
+  currentQuery = {
+    pageIndex: 0,
+    pageSize: 2,
+    status: EProductStatus.Active,
+    productName: null,
+    brandId: null,
+    categoryId: null,
+    minPrice: null,
+    maxPrice: null
+  };
   //Fontawesome
   constructor(
     private service: CatalogService,
@@ -36,16 +49,11 @@ export class CatalogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     if (this.configurationService.isReady) {
-      console.log('config ready');
-      
       this.loadData();
     }
     else {
-      console.log('config not ready');
       this.configurationService.settingLoaded$.subscribe(x => {
-        console.log('load data');
         this.loadData();
       });
     }
@@ -54,14 +62,12 @@ export class CatalogComponent implements OnInit {
   loadData(){
     this.getCategories();
     this.getBrands();
-    this.getCatalog(0, 2);
+    this.getCatalog(this.currentQuery);
   }
 
   getCategories(){
     this.service.getCategories().subscribe(categories =>{
       this.categories = categories;
-      // let allCategories = {id:null, name: 'category name from angular'}
-      // this.categories.unshift(allCategories);
     })
   }
 
@@ -72,44 +78,28 @@ export class CatalogComponent implements OnInit {
   }
 
   onFilterApplied(event: any){
-    // event.preventDefault();
-
-    // this.categorySelected = this.categorySelected && this.categorySelected.toString() != null ? this.categorySelected : null;
-    // this.brandSelected = this.brandSelected && this.brandSelected.toString() != null ? this.brandSelected : null;
-    console.log(this.categorySelected);
-    console.log(this.brandSelected);
-    this.getCatalog(this.paginationInfo.itemsPage, this.paginationInfo.actualPage, this.categorySelected, this.brandSelected);
+    this.getCatalog(this.currentQuery);
   }
 
   onBrandFilterChanged(event: any, value: string){
-    // event.preventDefault();
-    console.log(value);    
     this.brandSelected = value;
+    this.currentQuery.brandId = value;
   }
 
   onCategoryFilterChanged(event: any, value: number){
-    // event.preventDefault();
-    console.log(value);
     this.categorySelected = value;
+    this.currentQuery.brandId = value;
   }
 
   onPageChanged(value: any){
-    this.paginationInfo.actualPage = value;
-    this.getCatalog(value ,this.paginationInfo.itemsPage);
+    this.currentQuery.pageIndex = value;
+    this.getCatalog(this.currentQuery);
   }
 
-  // addToCart(item: ISku){
-  //   this.basketService.addItemToBasket(item);
-  // }
-
-  getCatalog(pageIndex: number, pageLimit: number, category?: number, brand?:string){
-    this.errorRecieved = false;
-    
-    this.service.getCatalog(pageIndex, pageLimit, category, brand)
-      .pipe(catchError( err => this.handleError(err) ))
+  getCatalog(params: { [param: string]: any }) {
+    this.service.getCatalog(params)
       .subscribe(catalog => {
         this.catalog = catalog;
-        console.log(catalog);
         this.paginationInfo = {
           actualPage : catalog.pageIndex,
           itemsPage : catalog.pageSize,
@@ -117,8 +107,6 @@ export class CatalogComponent implements OnInit {
           items: catalog.pageSize,
           totalPages: Math.ceil(catalog.count / catalog.pageSize)
         }
-        console.log(this.paginationInfo);
-        
       })
   }
 

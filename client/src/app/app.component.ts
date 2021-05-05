@@ -14,12 +14,10 @@ import { Title } from '@angular/platform-browser';
 export class AppComponent {
   Authenticated: boolean = false;
   subscription!: Subscription;
-
  constructor(
    private titleService: Title,
    private securityService: SecurityService,
    private configurationService: ConfigurationService,
-  //  private signalrService: SignalrService,
    private toastr: ToastrService,
    vcr: ViewContainerRef
  ) {
@@ -29,7 +27,6 @@ export class AppComponent {
  ngOnInit(): void {
     console.log('app on init');
     this.subscription = this.securityService.authenticationChallenge$.subscribe(res => this.Authenticated = res);
-    
     this.configurationService.load(); 
  }
 

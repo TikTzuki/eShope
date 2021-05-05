@@ -2,7 +2,7 @@ export const EPaymentMethod = {
   COD : 'COD',
   VISA: 'VISA',
   CREDIT: 'CREDIT',
-  BITCOIN: 'BITCOiN',
+  BITCOIN: 'BITCOIN',
   PAYPAL: 'PAYPAL',
   MASTERCARD: 'MASTERCARD'
 }

@@ -14,7 +14,7 @@
             </section>
             <section class="col-lg-1 col-md-1 col-1">
                 <div style="padding-top: 5px;">
-                    <app-cart-status></app-cart-status>
+                    <app-cart-status *ngIf="Authenticated"></app-cart-status>
                 </div>
             </section>
         </article>
@@ -31,10 +31,12 @@
     <div class="container">
         <article class="row">
             <section class="col-sm-6">
-                <img src="assets/images/logo.jpg" width="200" alt="" class="esh-app-footer-brand">
+                <img style="width: 20rem" src="assets/images/logo.jpg" width="200" alt="" class="esh-app-footer-brand">
             </section>
             <section class="col-sm-6">
-                Designed By @TikTzuki
+                <p>
+                    Designed By @TikTzuki
+                </p>
                 <!-- <img src="assets/images/main_footer_text.png" alt="footer text image" class="esh-app-footer-text hidden" width="335" height="26"> -->
             </section>
         </article>

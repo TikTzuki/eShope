@@ -22,20 +22,26 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HaNoiTowerComponent } from './ha-noi-tower/ha-noi-tower.component';
 import { TaciComponent } from './taci/taci.component';
 import { PrependHostPipe } from './shared/pipes/prependHost.pipe';
+import { ProfileModule } from './profile/profile.module';
+import { ChartsModule } from 'ng2-charts';
+import { QueenPuzzleComponent } from './queen-puzzle/queen-puzzle.component';
+import { RegisterComponent } from './login/register/register.component';
 
 @NgModule({
-  declarations: [									
+  declarations: [										
     AppComponent,
       AnalysisComponent,
-      ProfileComponent,
       LoginComponent,
+      RegisterComponent,
       HaNoiTowerComponent,
-      TaciComponent
+      TaciComponent,
+      QueenPuzzleComponent
    ],
   imports: [
     BrowserModule,
     routing,
     CKEditorModule,
+    ChartsModule,
     ReactiveFormsModule,
     NgbModule,
     //Custom Module
@@ -43,7 +49,8 @@ import { PrependHostPipe } from './shared/pipes/prependHost.pipe';
     ProductListModule,
     DashboardModule,
     ProductModule,
-    OrderListModule
+    OrderListModule,
+    ProfileModule
   ],
   providers: [],
   bootstrap: [AppComponent]

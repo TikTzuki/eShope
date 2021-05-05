@@ -15,14 +15,15 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { LoginModule } from './login/login.module';
-import { RegisterModule } from './register/register.module';
 import { AccountModule } from './account/account.module';
+import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent
    ],
   imports: [
     BrowserAnimationsModule,
+    ReactiveFormsModule,
     BrowserModule,
     NgbModule,
     ToastrModule.forRoot(),
@@ -36,7 +37,6 @@ import { AccountModule } from './account/account.module';
     ProductDetailsModule,
     CartModule,
     LoginModule,
-    RegisterModule,
     AccountModule
   ],
   providers: [],

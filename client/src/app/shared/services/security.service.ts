@@ -11,7 +11,9 @@ import jwtDecode from 'jwt-decode';
 import { DataService } from './data.service';
 import { IAuthorizeRequest } from '../models/authorizeRequest.model';
 import { tap } from 'rxjs/operators';
+import { ICustomer } from '../../../../../manager-client/src/app/shared/models/customer.model';
 import { RSA_NO_PADDING } from 'node:constants';
+import { IRegistingRequest } from '../models/registingCustomerRequest.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +26,7 @@ export class SecurityService {
   private identityUrl = '';
   private storage;
 
-  public UserData: any;
+  public UserData: ICustomer;
   public IsAuthorized!: boolean;
   constructor(
     private _http: HttpClient,
@@ -33,7 +35,6 @@ export class SecurityService {
     private configurationService: ConfigurationService,
     private _storageService: StorageService,
   ) {
-    console.log('constructor');
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json');
     this.headers.append('Accept', 'application/json');
@@ -41,7 +42,7 @@ export class SecurityService {
 
     this.configurationService.settingLoaded$.subscribe(x => {
       this.identityUrl = this.configurationService.serverSettings.identityUrl;
-      this.storage.store('IdentityUrl', this.identityUrl);
+      this.storage.store('identityUrl', this.identityUrl);
     });
 
     if (this.storage.retrieve('isAuthorized') !== '') {
@@ -62,16 +63,16 @@ export class SecurityService {
     console.log(authorizedRequest, url);
     this._http.post(url, JSON.stringify(authorizedRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
       tap((res: any) => {
-        if (res.status >= 200 && res.status < 300) {
           return res;
-        }
-        return false;
       })
     ).subscribe({
       next: res => {
-        if(res){
+        if(res.token){
           this.SetAuthorizationData(res.token, res.refreshToken);
         }
+      },
+      error: err=>{
+        alert("wrong input!!!");
       }
     });
   }
@@ -86,6 +87,7 @@ export class SecurityService {
   // this.UserData = this.storage.retrieve('userData');
     let tokenData:any = this.getDataFromToken(token);
     this.getUserData()
+      .pipe<ICustomer>(tap((res: any) => res))
       .subscribe(data => {
         this.UserData = data;
         this.storage.store('userData', data);
@@ -101,7 +103,6 @@ export class SecurityService {
 
   public Logoff() {
     this.ResetAuthorizationData();
-
     this.authenticationSource.next(false);
     window.location.href = location.origin;
   }
@@ -114,6 +115,7 @@ export class SecurityService {
       this._router.navigate(['/Unauthorized']);
     }
   }
+  
 
   private urlBase64Decode(str: string) {
     let output = str.replace('-', '+').replace('_', '/');
@@ -152,7 +154,7 @@ export class SecurityService {
     return data;
   }
 
-  private getUserData(): Observable<string[]>{
+  private getUserData(): Observable<ICustomer[]>{
     if(this.identityUrl === ''){
       this.identityUrl = this.storage.retrieve('IdentityUrl');
     }
@@ -160,7 +162,12 @@ export class SecurityService {
     const options = this.setHeaders();
 
     return this._http.get<string[]>(`${this.identityUrl}/api/customers/info`, options)
-    .pipe<string[]>((info:any) => info);
+    .pipe<ICustomer[]>((info:any) => info);
+  }
+
+  getUser(userId: number): Observable<ICustomer> {
+    return this._http.get(this.identityUrl + '/api/customers/' + userId)
+      .pipe<ICustomer>(tap((res: any) => { return res }));
   }
 
   private setHeaders():any {
@@ -183,10 +190,27 @@ export class SecurityService {
   public ResetAuthorizationData() {
     this.IsAuthorized = false;
     this.storage.store('isAuthorized', this.IsAuthorized);
+    this.UserData = null;
+    this.storage.store('userData', this.UserData);
   }
 
   GetToken(): any {
     return this.storage.retrieve('accessToken');
+  }
+
+  public Register(registingRequest: IRegistingRequest){
+    const url = this.identityUrl.endsWith('/') ? `${this.identityUrl}api/authenticate/register` : `${this.identityUrl}/api/authenticate/register`;
+    console.log(registingRequest, url);
+    this._http.post(url, JSON.stringify(registingRequest), this.setHeaders()).pipe<IAuthorizeResponseSuccess>(
+      tap((res:any)=>{
+          return res;
+      })
+    ).subscribe({
+      next: res=>{
+          window.alert("success!!!");
+      },
+      error: err => window.alert("user is already exists")
+    })
   }
 
 }

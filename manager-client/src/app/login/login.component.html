@@ -1,5 +1,5 @@
 <div class="login-background">
-    <div class="login-form" [formGroup]="authForm">
+    <div #login class="login-form" [formGroup]="authForm">
         <h1>Login</h1>
         <div class="form-input-material">
             <input type="text" name="username" id="username" formControlName="username" class="form-control-material" />
@@ -11,13 +11,12 @@
             <label for="password">Password</label>
         </div>
         <span *ngIf="password.invalid && (password.dirty || password.touched)" class="alert-sm"> Invalid password </span>
-        <button type="button" (click)="login(errorModal)" class="btn btn-ghost">Login</button>
+        <button type="button" (click)="loginn()" class="btn btn-ghost">Login</button>
     </div>
 </div>
-
 <ng-template #errorModal let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <h4 class="modal-title" id="modal-basic-title">Login false</h4>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>

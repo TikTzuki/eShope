@@ -1,11 +1,13 @@
 import { IAuthorizeRequest } from '../shared/models/authorizeRequest.model';
 import { SecurityService } from '../shared/services/security.service';
+import { RegisterComponent } from './register/register.component';
+import { EventEmitter } from 'protractor';
 import { Validators } from '@angular/forms';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { FormGroup } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +44,7 @@ export class LoginComponent implements OnInit {
   //   });
   // }
 
-  login(errorModal) {
+  loginn() {
     this.authForm.markAllAsTouched();
     if (this.authForm.valid) {
       this.authRequest = {
@@ -50,6 +52,8 @@ export class LoginComponent implements OnInit {
         password: this.password.value
       };
       this.sercurityService.Authorize(this.authRequest)
+    } else {
+      alert("wrong input");
     }
   }
 

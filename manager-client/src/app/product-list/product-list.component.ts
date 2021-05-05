@@ -7,6 +7,13 @@ import { ICatalog } from '../shared/models/catalog.model';
 import { IPager } from '../shared/models/pager.model';
 import { IProduct } from '../shared/models/product.model';
 import { EProductStatus } from '../shared/models/productStatus.const';
+import { ConfirmModelComponent } from '../shared/components/confirm-model/confirm-model.component';
+import { ICategory } from '../shared/models/category.model';
+import { IBrand } from '../shared/models/brand.model';
+import numberOnly from '../shared/utils/validate';
+import { FormControl } from '@angular/forms';
+import { AbstractControl, AbstractControlOptions } from '@angular/forms';
+import { AsyncValidatorFn, FormGroup, ValidatorFn } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 interface Product extends IProduct{
@@ -21,14 +28,26 @@ interface Product extends IProduct{
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent implements OnInit {
+  numberOnly:Function = numberOnly;
   authenticated: boolean = false;
   authSubscription: Subscription;
-  errorRecieved: boolean
-  // selectedTab: number = 1;
-  selectedTab: string = "all";
+  selectedTab: string = EProductStatus.All;
+  currentQuery = {
+    pageIndex: 0,
+    pageSize: 4,
+    status: null,
+  }
+  categories:ICategory[];
+  brands: IBrand[];
   EProductStatus = EProductStatus;
-  catalog: ICatalog<IProduct>;
+  ProductStatus = [
+    {name: 'All', value: EProductStatus.All},
+    {name: 'Active', value:EProductStatus.Active},
+    {name: 'Disabled',value:EProductStatus.Disabled},
+    {name: 'Deleted',value:EProductStatus.Deleted}
+  ]
   productList: Product[] = [];
+  searchFormGroup: FormGroup;
   paginationInfo: IPager;
   constructor(
     private configurationService:ConfigurationService,
@@ -55,26 +74,23 @@ export class ProductListComponent implements OnInit {
 
   changeTab(status: string) {
     this.selectedTab = status;
-    this.getCatalog({
-      pageIndex: this.paginationInfo.actualPage,
-      pageSize: this.paginationInfo.itemsPage,
-      status: status
-    });
+    this.currentQuery = {...this.currentQuery, pageIndex: 0, status: status};
+    this.getCatalog(this.currentQuery);
   }
 
   loadData(){
-    this.getCatalog({pageIndex: 0, pageSize: 10});
+    this.getCategories();
+    this.getBrands();
+    this.getCatalog(this.currentQuery);
+    this.loadSearchForm();
   }
 
   getCatalog(params: {[param:string]:any} ){
-    this.errorRecieved = false;
-    
     this.service.getCatalog(params).subscribe({
       next: catalog => {
-        this.catalog = catalog;
           this.productList = [];
         //Load list product
-        this.catalog.data.forEach(product => {
+        catalog.data.forEach(product => {
           let productTemp:Product={
             ...product,
             totalAvailable: 0,
@@ -97,42 +113,90 @@ export class ProductListComponent implements OnInit {
           actualPage : catalog.pageIndex,
           itemsPage : catalog.pageSize,
           totalItems: catalog.count,
-          items: catalog.pageSize,
+          items: catalog.data.length,
           totalPages: Math.ceil(catalog.count / catalog.pageSize)
         }
-      },
-      error: err=>{
-        this.handleError(err);
       }
     })
   }
 
-    private handleError(error: any){
-    this.errorRecieved = true;
-    if (error.error instanceof ErrorEvent) {
-      console.log('Client side network error occurred', error.error.message);
-    } else {
-        console.error('Backend - ' +
-          `status: ${error.status}, ` +
-          `statusText: ${error.statusText}, ` +
-          `message: ${error.error.message}`);
-    }
-    return throwError(error);
+  loadSearchForm(){
+    this.searchFormGroup = new SearchFormGroup({
+      id: new FormControl(null),
+      categoryId: new FormControl(null),
+      brandId: new FormControl(null),
+      minPrice: new FormControl(null),
+      maxPrice: new FormControl(null)
+    })
   }
 
+  searchProduct(){
+    console.log(this.searchFormGroup);
+    this.currentQuery = {...this.currentQuery, ...this.searchFormGroup.value} 
+    this.getCatalog(this.currentQuery);
+  }
 
-  private deleteProduct(content, itemId) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+  deleteProduct(product:IProduct) {
+    let confirmRef = this.modalService.open(ConfirmModelComponent);
+    confirmRef.componentInstance.message = "Delete product?"
+    confirmRef.result.then((result) => {
+      product.status = EProductStatus.Deleted;
       let promiseAddress = () => Promise.all([
-        this.service.deleteProduct(itemId)
+        this.service.deleteProduct(product).toPromise()
       ]);
       promiseAddress().then(() => this.loadData());
-      window.location.reload();
-    }, (reason) => {
-    });
+    }, (reason) => {});
+  }
+
+  onPageChanged(value){
+    this.currentQuery.pageIndex = value;
+    this.getCatalog(this.currentQuery);
   }
 
   get Object(){
     return window.Object;
+  }
+
+  getCategories(){
+    this.service.getCategories().subscribe({
+      next: res => this.categories = res
+    })
+  }
+  
+  getBrands(){
+    this.service.getBrands().subscribe({
+      next: brands => this.brands = brands
+    })
+  }
+
+}
+
+class SearchFormGroup extends FormGroup{
+  constructor(
+    controls: { [key: string]: AbstractControl },
+    validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions,
+    asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[]
+  ) {
+      super(controls, validatorOrOpts, asyncValidator)
+  }
+
+  get idControll():FormControl{
+    return this.get('id') as FormControl;
+  }
+
+  get categoryIdControl():FormControl{
+    return this.get('categoryId') as FormControl;
+  }
+
+  get brandIdControl():FormControl{
+    return this.get('brandId') as FormControl;
+  }
+
+  get minPrice():FormControl{
+    return this.get('minPrice') as FormControl;
+  }
+
+  get maxPrice():FormControl{
+    return this.get('maxPrice') as FormControl;
   }
 }

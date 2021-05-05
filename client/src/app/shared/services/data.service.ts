@@ -80,10 +80,11 @@ export class DataService {
     if (error.error instanceof ErrorEvent) {
       console.error('Client side network error occurred:', error.error.message);
     } else {
-      console.error('Backend - ' +
-        `status: ${error.status}, ` +
-        `statusText: ${error.statusText}, ` +
-        `message: ${error.error.message}`);
+      console.error(error);
+      // console.error('Backend - ' +
+      //   `status: ${error.status}, ` +
+      //   `statusText: ${error.statusText}, ` +
+      //   `message: ${error.error.message}`);
     }
 
     return throwError(error || 'server error');

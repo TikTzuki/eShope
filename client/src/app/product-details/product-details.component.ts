@@ -15,6 +15,7 @@ import { FormBuilder } from '@angular/forms';
 import { CartService } from '../cart/cart.service';
 import numberOnly from '../shared/util/validate';
 import { ICartItem } from '../shared/models/cartItem.model';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-product-details',
@@ -30,12 +31,12 @@ export class ProductDetailsComponent implements OnInit {
   quantity: number = 0;
   skuForm: FormGroup;
   slideConfig = {
-    slidesToShow: 2,
-    slidesToScroll: 1
+    slidesToShow: 3,
+    slidesToScroll: 1,
     // "nextArrow": "<div class='nav-btn next-slide'></div>",
     // "prevArrow": "<div class='nav-btn prev-slide'></div>",
-    // "dots": true,
-    // "infinite": false
+  //  dots: true,
+    // infinite: false
   };
 
   constructor(
@@ -44,9 +45,15 @@ export class ProductDetailsComponent implements OnInit {
     private configurationService: ConfigurationService,
     private cartEventService: CartWrapperService,
     private formBuilder: FormBuilder,
-    private sercurityService: SecurityService) {
-      this.authenticated = sercurityService.IsAuthorized;
-    }
+    private sercurityService: SecurityService,
+    private ngbCarouselConfig: NgbCarouselConfig) {
+
+    this.authenticated = sercurityService.IsAuthorized;
+    this.ngbCarouselConfig.interval = 5000;
+    this.ngbCarouselConfig.wrap = true;
+    this.ngbCarouselConfig.keyboard = false;
+    this.ngbCarouselConfig.pauseOnHover = false;
+  }
 
   ngOnInit(): void {
     if (this.configurationService.isReady) {
@@ -120,6 +127,7 @@ export class ProductDetailsComponent implements OnInit {
     this.quantity -=1;
     this.onQuantityChanged();
   }
+  
   numberOnly(event: any){
     return numberOnly(event);
   }

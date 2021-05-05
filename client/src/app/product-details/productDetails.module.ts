@@ -7,6 +7,8 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { ProductDetailService } from './productDetails.service';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { NgbCarouselModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCarousel } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
@@ -14,7 +16,8 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     SharedModule,
     CommonModule,
     FontAwesomeModule,
-    SlickCarouselModule
+    SlickCarouselModule,
+    NgbCarouselModule
   ],
   declarations: [ProductDetailsComponent],
   providers: [ProductDetailService]

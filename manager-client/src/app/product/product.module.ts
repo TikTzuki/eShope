@@ -10,9 +10,9 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
 @NgModule({
   declarations: [ProductComponent],
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
       BrowserModule,
-    // SharedModule,
     CKEditorModule,
     ReactiveFormsModule,
     SharedModule

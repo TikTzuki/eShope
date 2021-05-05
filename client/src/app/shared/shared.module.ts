@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { PrependHostPipe } from './pipes/prependHost.pipe';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     PageNotFoundComponent,
     ModalComponent,
     UppercasePipe,
+    PrependHostPipe
   ],
   exports: [
     //Module
@@ -53,6 +55,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     PageNotFoundComponent,
     ModalComponent,
     UppercasePipe,
+    PrependHostPipe
   ]
 })
 export class SharedModule {

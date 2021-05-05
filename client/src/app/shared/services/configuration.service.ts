@@ -34,7 +34,7 @@ export class ConfigurationService {
       //TODO: Json-server config
       this.serverSettings = {
         identityUrl: 'https://localhost:5001',
-        purchaseUrl: 'http://localhost:3000',
+        purchaseUrl: 'https://localhost:5001',
       }
 
       this.storageService.store('identityUrl', this.serverSettings.identityUrl);

@@ -1,3 +1,5 @@
+import { IAddress } from "./address.model";
+
 export interface ISellerAccount{
   id: number;
   name: string;
@@ -9,4 +11,5 @@ export interface ISellerAccount{
   accessExpries: string;
   refreshToken: string;
   refreshExpries: string;
+  address:IAddress[]
 }

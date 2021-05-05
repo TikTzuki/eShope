@@ -15,45 +15,50 @@ export class CatalogService{
   private brandUrl: string='';
 
   constructor(
-    private service: DataService, private configurationService: ConfigurationService
+    private service: DataService,
+    private configurationService: ConfigurationService
   ){
-    console.log('catalog service contruct');
+    if(this.configurationService.isReady){
+      this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products/catalog';
+      this.categoryUrl = this.configurationService.serverSettings.purchaseUrl + '/api/categories';
+      this.brandUrl = this.configurationService.serverSettings.purchaseUrl + '/api/brands';
+    }else {
     this.configurationService.settingLoaded$.subscribe(x => {
-      this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/catalog';
+      this.catalogUrl = this.configurationService.serverSettings.purchaseUrl + '/api/products/catalog';
       this.categoryUrl = this.configurationService.serverSettings.purchaseUrl + '/api/categories';
       this.brandUrl = this.configurationService.serverSettings.purchaseUrl + '/api/brands';
     });
+    }
   }
   
-  getCatalog(pageIndex: number, pageLimit: number, category: number, brand: string): Observable<ICatalog> {
-    let url = this.catalogUrl; 
-    console.log('get catalog', url);
-    url = url
-      + '?page=' + pageIndex
-      + '&limit=' + pageLimit;
-
-    if (category){
-      url = url + '&categoryId=' + category;
+  getCatalog(params?: { [param: string]: any }): Observable<ICatalog<IProduct>> {
+    let url = this.catalogUrl;
+    if (params && Object.values(params).some(value => value)) {
+      url += '?';
+      for (const [key, value] of Object.entries(params)) {
+        if (value) {
+          url += `${key}=${value}&`;
+        }
+      }
+      url = url.substring(0, url.lastIndexOf('&'));
     }
-
-    if (brand){
-      url = url + '&brand=' + brand;
-    }
-    console.log(url);
-    return this.service.get(url).pipe<ICatalog>(tap((response: any) => {
+    return this.service.get(url).pipe<ICatalog<IProduct>>(tap((response: any) => {
+      console.log(url, response);
       return response;
     }));
   }
 
-  getCategories(): Observable<ICategory[]>{
-    return this.service.get(this.categoryUrl).pipe<ICategory[]>(tap((response:any)=>{
-      return response;
-    }));
+  getBrands():Observable<IBrand[]>{
+    let url = this.brandUrl;
+    return this.service.get(url).pipe<IBrand[]>(tap((res:any)=>{
+      return res;
+    }))
   }
 
-  getBrands(): Observable<IBrand[]> {
-    return this.service.get(this.brandUrl).pipe<IBrand[]>(tap((response: any) => {
-      return response
-    }));
+  getCategories():Observable<ICategory[]>{
+    let url = this.categoryUrl;
+    return this.service.get(url).pipe<ICategory[]>(tap((res:any)=>{
+      return res;
+    }))
   }
 }

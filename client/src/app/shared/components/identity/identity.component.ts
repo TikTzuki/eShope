@@ -10,24 +10,19 @@ import { ICustomer } from '../../models/customer.model';
 })
 export class Identity implements OnInit {
   authenticated: boolean = false;
-  private subscription!: Subscription;
-  private customer: ICustomer;
+  subscription!: Subscription;
+  customer: ICustomer;
 
-  constructor(private service: SecurityService,
-    //  private signalrService: SignalrService
-     ) { }
+  constructor(
+    private service: SecurityService,
+  ) { }
 
   ngOnInit(): void {
     this.subscription = this.service.authenticationChallenge$.subscribe(res => {
       this.authenticated = res;
-      this.customer = this.service.UserData.email;
+      this.customer = this.service.UserData;
     });
 
-    // if (window.location.hash) {
-    //   this.service.AuthorizedCallBack();
-    // }
-
-    console.log('checking authorized' + this.service.IsAuthorized);
     this.authenticated = this.service.IsAuthorized;
 
     if (this.authenticated) {
