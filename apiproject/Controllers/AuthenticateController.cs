@@ -44,7 +44,6 @@ namespace Controllers
           {
               new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-
           };
         foreach (var userrole in userRole)
         {
@@ -176,7 +175,7 @@ namespace Controllers
     [Route("register-seller")]
     public async Task<IActionResult> registeradmin([FromBody] Register register)
     {
-      var userExists = await userManager.FindByEmailAsync(register.email);
+      var userExists = await userManager.FindByNameAsync(register.phoneNumber);
       if (userExists != null)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Lỗi", message = "Tài khoản này đã tồn tại trong hệ thống" });
@@ -188,15 +187,12 @@ namespace Controllers
           Email = register.email,
           UserName = register.phoneNumber,
           PhoneNumber = register.name,
-
           SecurityStamp = Guid.NewGuid().ToString(),
-
         };
         var res = await userManager.CreateAsync(user, register.password);
         if (!res.Succeeded)
         {
           return StatusCode(StatusCodes.Status500InternalServerError, new Response { status = "Lỗi", message = "Qúa trình đăng ký user đã xảy ra lỗi." });
-
         }
         if (!await roleManager.RoleExistsAsync(UserRole.seller))
         {
@@ -210,17 +206,17 @@ namespace Controllers
         {
           await userManager.AddToRoleAsync(user, UserRole.seller);
         }
-          var sel=new Seller()
-            {
-                 name=user.PhoneNumber,
-                 password=user.PasswordHash,
-                phoneNumber=user.UserName,
-                 email=user.Email,
-                 accessToken=null,
-                 refreshToken=null
-             };
-            await _ecommerContext.seller.AddAsync(sel);
-             await _ecommerContext.SaveChangesAsync();
+        var sel = new Seller()
+        {
+          name = user.PhoneNumber,
+          password = user.PasswordHash,
+          phoneNumber = user.UserName,
+          email = user.Email,
+          accessToken = null,
+          refreshToken = null
+        };
+        await _ecommerContext.seller.AddAsync(sel);
+        await _ecommerContext.SaveChangesAsync();
         return Ok(new Response { status = "Ok", message = "Đã đăng ký thành công tài khoản seller." });
       }
     }

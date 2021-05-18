@@ -77,6 +77,7 @@
         padding: 0.5rem 0;
         background: none;
         border: none;
+        width: 100%;
         // input 处于focus状态 or 占位符未显示(即input中输入了数据)
         &:focus,
         &:not(:placeholder-shown) {

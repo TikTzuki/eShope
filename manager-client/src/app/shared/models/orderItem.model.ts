@@ -2,12 +2,12 @@ import { IImage } from './image.model';
 import { ISku } from './sku.model';
 export interface IOrderItem{
   id: number;
-  order_id: number;
-  sku_id: number;
+  orderId: number;
+  skuId: number;
   name: string;
   variation: string;
-  itemPrice: number;
+  price: number;
   quantity: number;
   image: string;
-  sku: ISku;
+  sku: ISku
 }

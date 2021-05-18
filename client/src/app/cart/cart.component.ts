@@ -54,6 +54,7 @@ export class CartComponent implements OnInit {
     if(!this.securityService.IsAuthorized){
       this.securityService.GoToLoginPage();
     }
+
     if (this.configurationService.isReady) {
       this.loadData();
     } else {
@@ -64,11 +65,22 @@ export class CartComponent implements OnInit {
   }
 
   loadData() {
+    // Guard address
+    this.securityService.getUser(this.securityService.UserData.id).subscribe({
+      next: res => {
+        if(res.address.length == 0) {
+          this.router.navigate(['/account/address'])
+          alert('You need to have a address');
+        }
+      }
+    })
+
     let promiseAddress = () => Promise.all([
       this.getAddress(),
       this.service.getAddress().toPromise()
     ]);
     promiseAddress().then(() => this.getCart());
+
   }
 
   getCart(): any {
@@ -122,10 +134,6 @@ export class CartComponent implements OnInit {
   }
 
   selectCartItem(itemRemoves: ICartItem[]) {
-    // new Observable((observer) => {
-    //   observer.next("hihi");
-    // }).subscribe(res => {
-    //   console.log(res);
       itemRemoves.forEach(item => {
         if (this.cartItems.indexOf(item) == -1) {
           this.cartItems.push(item);
@@ -134,8 +142,6 @@ export class CartComponent implements OnInit {
         }
       });
       console.log(this.cartItems);
-    // }
-    // );
   }
 
   removeCartItem(itemRemoves: ICartItem[]) {
@@ -233,7 +239,7 @@ export class CartComponent implements OnInit {
     this.shippingFee = 0;
     this.cart.items.forEach(item => {
       this.provisional += (item.itemPrice * item.quantity);
-      this.shippingFee += this.shippingAddress.id * 1400;
+      this.shippingFee += new Date().getDate();
   });
     this.totalPrice = this.provisional + this.shippingFee;
     this.cart.shippingFee = this.shippingFee;

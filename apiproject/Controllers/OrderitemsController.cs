@@ -67,6 +67,7 @@ namespace Controllers
       return NoContent();
     }
 
+  //TODO Anbandon
      [HttpDelete("{id}")]
      
      public async Task<IActionResult> Deleteprderitem(int id)

@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using apiproject.Interfaces;
 using apiproject.Models.OrderAggregate;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
+using Data;
 using Order = Models.Order;
 using Stripe;
-using Data;
-using apiproject.Specifications;
-using System.Linq;
 
 namespace apiproject.Services
 {

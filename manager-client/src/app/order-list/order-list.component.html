@@ -34,7 +34,7 @@
             <button class="btn clear-btn" (click)="loadSearchForm()"><i class="fas fa-times"></i>  </button>
         </div>
         <div *ngIf="selectedOrders.length !=0" class="action-multiple d-flex">
-            <button class="btn btn-sm" (click)="print()">Print</button>
+            <button class="btn btn-sm" (click)="print(selectedOrders)">Print</button>
             <div ngbDropdown class="d-inline-block" *ngIf="selectedTab==EOrderStatus.Pending || selectedTab==EOrderStatus.ReadyToShip">
                 <button class="btn btn-sm" id="dropdownBasic1" ngbDropdownToggle>Change Status <i class="fas fa-angle-down"></i> </button>
                 <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
@@ -64,11 +64,6 @@
                         </th>
                         <th class="table-cell table-header-node">
                             <div class="table-cell-wrapper">
-                                <p> Customer </p>
-                            </div>
-                        </th>
-                        <th class="table-cell table-header-node">
-                            <div class="table-cell-wrapper">
                                 <p> Shipping Address </p>
                             </div>
                         </th>
@@ -84,7 +79,7 @@
                         </th>
                         <th class="table-cell table-header-node">
                             <div class="table-cell-wrapper">
-                                <p> Total price </p>
+                                <p> Price </p>
                             </div>
                         </th>
                         <th class="table-cell table-header-node">
@@ -124,13 +119,10 @@
                                     <p> {{order.id}} </p>
                                 </div>
                             </td>
+
                             <td class="table-cell table-cell-selection">
                                 <div class="table-cell-wrapper">
                                     <p> {{order.customer.name}} </p>
-                                </div>
-                            </td>
-                            <td class="table-cell table-cell-selection">
-                                <div class="table-cell-wrapper">
                                     <p> {{order.shippingAddress}} </p>
                                 </div>
                             </td>
@@ -164,7 +156,7 @@
                                     <div class="d-flex flex-column">
                                         <button *ngIf="order.status==EOrderStatus.Pending" class="btn btn-sm btn-success" (click)="changeStatusOrders([order], EOrderStatus.ReadyToShip)"> Ready to ship </button>
                                         <button *ngIf="order.status==EOrderStatus.Pending" class="btn btn-sm btn-danger" (click)="changeStatusOrders([order], EOrderStatus.Canceled)"> Cancel </button>
-                                        <button *ngIf="order.status!=EOrderStatus.Pending" class="btn btn-sm btn-info"> Details </button>
+                                        <button *ngIf="order.status!=EOrderStatus.Pending" class="btn btn-sm btn-info" [routerLink]="'/order/'+order.id"> Details </button>
                                     </div>
                                 </div>
                             </td>

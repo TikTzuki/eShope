@@ -14,7 +14,6 @@ import { FormControl } from '@angular/forms';
 import { AbstractControl, AbstractControlOptions, AsyncValidatorFn, FormGroup, ValidatorFn } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 import { stat } from 'node:fs';
-
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
@@ -33,6 +32,7 @@ export class OrderListComponent implements OnInit {
   };
   OrderStatus = [
     { name: 'All', value: EOrderStatus.All },
+    { name: 'Unpaid', value: EOrderStatus.Unpaid },
     { name: 'Pending', value: EOrderStatus.Pending },
     { name: 'Ready To Ship', value: EOrderStatus.ReadyToShip },
     { name: 'Shipped', value: EOrderStatus.Shipped },
@@ -153,8 +153,8 @@ export class OrderListComponent implements OnInit {
     }, (reason)=>{})
   }
 
-  print(){
-
+  print(orders: IOrder[]){
+    this.service.createPDF(orders);
   }
   
   onPageChanged($event){

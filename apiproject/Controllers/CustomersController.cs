@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Models;
 
 namespace Controllers
 {
@@ -19,9 +20,11 @@ namespace Controllers
  public class CustomersController : ControllerBase
  {
      private readonly EcommerContext _context;
-     public CustomersController(EcommerContext context)
+     private readonly UserManager<Applicationuser> _userManager;
+     public CustomersController(EcommerContext context, UserManager<Applicationuser> userManager)
      {
          _context=context;
+         _userManager = userManager;
      }
      
      [HttpGet]
@@ -39,9 +42,9 @@ namespace Controllers
       {
           return NotFound();
       }
-      cusDTO.address = _context.address
+      cusDTO.address = await _context.address
       .Where(address => address.customerId == cusDTO.id)
-      .Select(a => a.toAddressDTO()).ToList();
+      .Select(a => a.toAddressDTO()).ToListAsync();
       return cusDTO;
      }
 

@@ -1,4 +1,35 @@
 <div class=" content">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2> Daily Task List</h2>
+                </div>
+                <div class="card-body" *ngIf="dailyTask">
+                    <div class="row">
+                        <div class="col-4">
+                            <a class="daily-task card align-items-center" routerLink="/orders">
+                                <h1>{{dailyTask.pendingOrders}}</h1>
+                                <p>Pending Orders</p>
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a class="daily-task card align-items-center" routerLink="/orders">
+                                <h1>{{dailyTask.unpaidOrders}}</h1>
+                                <p>Unpaid Orders</p>
+                            </a>
+                        </div>
+                        <div class="col-4">
+                            <a class="daily-task card align-items-center" routerLink="/products">
+                                <h1>{{dailyTask.shortOfStockProducts}}</h1>
+                                <p>Short Of Stock Products</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class=" row">
         <div class=" col-12">
             <div class=" card card-chart">

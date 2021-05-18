@@ -68,7 +68,7 @@ export class AccountService {
   }
 
   updateAddress(address: IAddress):Observable<boolean> {
-    let url = this.purchaseUrl + '/address/' + address.id;
+    let url = this.purchaseUrl + '/api/address/' + address.id;
     return this.service.put(url, address).pipe<boolean>(tap((res: any) => {
       return res;
     }));
@@ -77,7 +77,7 @@ export class AccountService {
   deleteAddress(id):Observable<boolean>{
     let url  = this.addressUrl +'/'+ id;
     this.service.delete(url);
-    return new Observable();
+    return new Observable((observer) => { observer.next(true) });
   }
 
   getProfile():Observable<ICustomer>{

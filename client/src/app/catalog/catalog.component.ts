@@ -33,7 +33,7 @@ export class CatalogComponent implements OnInit {
   errorRecieved: boolean;
   currentQuery = {
     pageIndex: 0,
-    pageSize: 2,
+    pageSize: 10,
     status: EProductStatus.Active,
     productName: null,
     brandId: null,

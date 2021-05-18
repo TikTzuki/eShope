@@ -28,9 +28,10 @@ namespace Controllers
      {
          
         var sellerDTOs = _context.seller.Select(p=>p.toSellerDTO()).ToList();
-        sellerDTOs.ForEach(sellerDTO=>{
-            sellerDTO.address = _context.selleraddresses.Where(Address=>Address.sellerId==sellerDTO.id).Select(a=>a.toSellerAddressDTO()).ToList();
-        });
+        foreach (var sellerDTO in sellerDTOs)
+        {
+            sellerDTO.address = await _context.selleraddresses.Where(Address=>Address.sellerId==sellerDTO.id).Select(a=>a.toSellerAddressDTO()).ToListAsync();
+        }
         return sellerDTOs;
      }
 
@@ -42,19 +43,20 @@ namespace Controllers
       {
           return NotFound();
       }
-      sellerDTO.address = _context.selleraddresses
+      sellerDTO.address = await _context.selleraddresses
       .Where(address=>address.sellerId==sellerDTO.id)
-      .Select(a=>a.toSellerAddressDTO()).ToList();
+      .Select(a=>a.toSellerAddressDTO()).ToListAsync();
       return sellerDTO;
      }
 
     [Route("info")]
     [HttpGet]
-    public async Task<ActionResult<SellerDTO>> SellerInfoFormToken()
+    public async Task<ActionResult> SellerInfoFormToken()
     {
       var subject = TokenUtil.getSubject(Request);
-      var seller = await _context.seller.Where(seller => seller.phoneNumber.Equals(subject)).FirstAsync();
-      return Ok(seller);
+      Console.WriteLine(subject);
+      var sellers = await _context.seller.Where(s => s.phoneNumber.Equals(subject)).ToListAsync();
+      return sellers.Count() > 0 ? Ok(sellers.First()) : Unauthorized();
     }
 
      [HttpPost]

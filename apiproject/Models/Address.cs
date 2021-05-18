@@ -15,5 +15,6 @@ namespace Models{
         public String address2{get;set;}
         [EmailAddress]
         public String address3{get;set;}
+        public bool isDefault {get;set;}
     }
 }

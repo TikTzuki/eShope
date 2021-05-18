@@ -65,6 +65,7 @@ export class AddressComponent implements OnInit {
   }
 
   loadData() {
+    this.addressForm = null;
     this.getUser();
   }
 
@@ -88,6 +89,7 @@ export class AddressComponent implements OnInit {
         customerId: new FormControl(address.customerId),
         id: new FormControl(address.id)
       })
+      console.log(this.addressForm);
     } else {
       this.addressForm = new FormGroup({
         street: new FormControl('', [Validators.required]),
@@ -101,20 +103,15 @@ export class AddressComponent implements OnInit {
     }
   }
 
-  setAsDefault(addressId: number) {
-    let oldDefault = this.user.address.find(address => address.isDefault == true);
-    oldDefault.isDefault = false;
+  async setAsDefault(addressId: number) {
+    let oldDefault = this.user.address.find(address => address.isDefault);
     let newDefault = this.user.address.find(address => address.id == addressId);
-    newDefault.isDefault = true
-
-    this.service.updateAddress(newDefault).subscribe({
-      next: res => console.log(res),
-      complete: () => {
-        this.service.updateAddress(oldDefault).subscribe({
-          next: res => console.log(res)
-        })
-      }
-    })
+    if (oldDefault) {
+      oldDefault.isDefault = false;
+      await this.service.updateAddress(oldDefault).toPromise();
+    }
+    newDefault.isDefault = true;
+    await this.service.updateAddress(newDefault).toPromise();
   }
 
   openAddressForm(content: any, address?: IAddress) {
@@ -140,7 +137,7 @@ export class AddressComponent implements OnInit {
   saveAddress(): Observable<any> {
     if (this.addressForm.invalid) {
       alert("check your input");
-      return null;
+      return new Observable();
     }
     if (!this.addressForm.value.id) {
       return this.service.createNewAddress(this.addressForm.value);
@@ -153,10 +150,7 @@ export class AddressComponent implements OnInit {
     let modalRef = this.modalService.open(ConfirmModalComponent);
     modalRef.componentInstance.message = "Delete this address?";
     modalRef.result.then((result) => {
-      let promiseDelete = () => Promise.all([
-        this.service.deleteAddress(addressId).toPromise()
-      ])
-      promiseDelete().then(() => this.loadData());
+      this.service.deleteAddress(addressId).toPromise();
     }, (reason) => { });
   }
 

@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using DTO;
 using System;
 using System.Collections.Generic;
@@ -274,7 +275,8 @@ namespace DTO
         street = ad.street,
         address1 = ad.address1,
         address2 = ad.address2,
-        address3 = ad.address3
+        address3 = ad.address3,
+        isDefault = ad.isDefault
       };
     }
     public static Address toAddress(this AddressDTO ad1)
@@ -286,7 +288,8 @@ namespace DTO
         street = ad1.street,
         address1 = ad1.address1,
         address2 = ad1.address2,
-        address3 = ad1.address3
+        address3 = ad1.address3,
+        isDefault = ad1.isDefault
       };
     }
     public static void Mapto7(this Address ad, AddressDTO ad1)
@@ -297,6 +300,7 @@ namespace DTO
       ad.address1 = ad1.address1;
       ad.address2 = ad1.address2;
       ad.address3 = ad1.address3;
+      ad.isDefault = ad1.isDefault;
     }
     public static CategoryDTO toCategoryDTO(this Category c)
     {

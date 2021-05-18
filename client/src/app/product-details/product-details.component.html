@@ -10,7 +10,8 @@
             <ngb-carousel *ngIf="selectedSku">
                 <ng-template ngbSlide *ngFor="let image of selectedSku.images">
                     <div class="picsum-img-wrapper">
-                        <img [src]="image.url | prependHost">
+                        <img class="magnifiedImg zoom" [src]="image.url | prependHost">
+
                     </div>
                 </ng-template>
             </ngb-carousel>
@@ -32,7 +33,7 @@
         <!-- Product detail -->
         <div class="product-detail col-md-8 col-sm-12">
             <h1>{{product.productName}}</h1>
-            <p> Brand: {{product.brandId}}</p>
+            <p> Brand: {{product?.brand?.name}}</p>
             <div class="row">
                 <div class="product-info col-md-6 col-sm-12">
                     <div class="module-price">

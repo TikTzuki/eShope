@@ -69,6 +69,7 @@ namespace apiproject
       );
 
       services.AddScoped<IOrderService, OrderService>();
+      services.AddScoped<IProductService, Services.ProductService>();
       services.AddIdentity<Applicationuser, IdentityRole>()
         .AddEntityFrameworkStores<EcommerContext>()
         .AddDefaultTokenProviders();

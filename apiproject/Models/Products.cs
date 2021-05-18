@@ -15,9 +15,9 @@ namespace Models{
         public String productName{get;set;}
         public String description{get;set;}
         public String status{get;set;}
-        public virtual brand Brand{get;set;}
-         public IEnumerable<Sku> skus1{get;set;}
-        public virtual Category Category{get;set;}
-        public virtual Seller Seller{get;set;}
+        // public virtual brand Brand{get;set;}
+        //  public IEnumerable<Sku> skus1{get;set;}
+        // public virtual Category Category{get;set;}
+        // public virtual Seller Seller{get;set;}
     }
 }

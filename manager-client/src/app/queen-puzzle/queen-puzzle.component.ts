@@ -14,7 +14,7 @@ export class QueenPuzzleComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.solve(400);
+    this.solve(100);
   }
 
   solve(step:number){

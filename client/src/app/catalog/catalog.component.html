@@ -34,11 +34,11 @@
                 </label>
                 <div class="input-group mb-3">
                     <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.minPrice" class="form-control" placeholder="min" aria-label="Username">
-                    <span class="input-group-text bg-light">₫</span>
+                    <span class="input-group-text bg-light"></span>
                 </div>
                 <div class="input-group mb-3">
                     <input type="text" (keypress)="numberOnly($event)" [(ngModel)]="currentQuery.maxPrice" class="form-control" placeholder="max" aria-label="Username">
-                    <span class="input-group-text bg-light">₫</span>
+                    <span class="input-group-text bg-light"></span>
                 </div>
             </div>
             <div class="filter-row d-flex justify-content-center">
@@ -60,7 +60,7 @@
                                     <span>{{product.productName}}</span>
                                 </div>
                                 <div class="esh-catalog-price">
-                                    <span>{{product.skus[0].price | currency}} ₫</span>
+                                    <span>{{product.skus[0].price | currency}}</span>
                                 </div>
                             </a>
                         </div>

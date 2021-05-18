@@ -84,21 +84,20 @@ export class SecurityService {
     this.storage.store('isAuthorized', true);
 
     // TODO: replace for get user data
-  // this.UserData = this.storage.retrieve('userData');
-    let tokenData:any = this.getDataFromToken(token);
+    // this.UserData = this.storage.retrieve('userData');
+    let tokenData: any = this.getDataFromToken(token);
     this.getUserData()
       .pipe<ICustomer>(tap((res: any) => res))
-      .subscribe(data => {
-        this.UserData = data;
-        this.storage.store('userData', data);
-        //emit observable
-        this.authenticationSource.next(true);
-        window.location.href = location.origin;
-      },
-        error => this.HandleError(error),
-        () => {
-          console.log(this.UserData);
-        });
+      .subscribe({
+        next: data => {
+          this.UserData = data;
+          this.storage.store('userData', data);
+          //emit observable
+          this.authenticationSource.next(true);
+          window.location.href = location.origin;
+        },
+        error: this.HandleError
+      });
   }
 
   public Logoff() {
@@ -110,9 +109,9 @@ export class SecurityService {
   public HandleError(error: any) {
     console.log(error);
     if (error.status == 403) {
-      this._router.navigate(['/Forbidden']);
+      alert('Forrbiden');
     } else if (error.status == 401) {
-      this._router.navigate(['/Unauthorized']);
+      alert('Unauthorized');
     }
   }
   

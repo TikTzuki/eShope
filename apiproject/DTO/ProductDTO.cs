@@ -12,5 +12,7 @@ namespace DTO{
         public String status{get;set;}
          public IEnumerable<SkuDTO> skus{get;set;}
          public SellerDTO seller{get;set;}
+         public brandDTO brand{get;set;}
+         public CategoryDTO category{get;set;}
     }
 }

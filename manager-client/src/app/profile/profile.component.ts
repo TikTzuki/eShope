@@ -83,20 +83,15 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  setAsDefault(addressId: number) {
-    let oldDefault = this.user.address.find(address => address.isDefault == true);
-    oldDefault.isDefault = false;
+  async setAsDefault(addressId: number) {
+    let oldDefault = this.user.address.find(address => address.isDefault);
     let newDefault = this.user.address.find(address => address.id == addressId);
-    newDefault.isDefault = true
-
-    this.service.updateAddress(newDefault).subscribe({
-      next: res => console.log(res),
-      complete: () => {
-        this.service.updateAddress(oldDefault).subscribe({
-          next: res => console.log(res)
-        })
-      }
-    })
+    if (oldDefault) {
+      oldDefault.isDefault = false;
+      await this.service.updateAddress(oldDefault).toPromise();
+    }
+    newDefault.isDefault = true;
+    await this.service.updateAddress(newDefault).toPromise();
   }
 
   openAddressForm(content, address?:IAddress) {
@@ -120,6 +115,7 @@ export class ProfileComponent implements OnInit {
   }
 
   saveAddress():Observable<any>{
+    this.addressForm.markAllAsTouched();
     if(this.addressForm.invalid){
       alert("check your input");
       return null;
